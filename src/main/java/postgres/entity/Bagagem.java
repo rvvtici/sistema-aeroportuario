@@ -2,7 +2,6 @@ package postgres.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -12,9 +11,49 @@ import java.math.BigDecimal;
         @Index(name = "idx_bagagem_ticket", columnList = "ticket_id")
     }
 )
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+
 public class Bagagem {
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public TicketVoo getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(TicketVoo ticket) {
+        this.ticket = ticket;
+    }
+
+    public BigDecimal getPeso() {
+        return peso;
+    }
+
+    public void setPeso(BigDecimal peso) {
+        this.peso = peso;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Bagagem(Long id, TicketVoo ticket, BigDecimal peso) {
+        this.id = id;
+        this.ticket = ticket;
+        this.peso = peso;
+    }
+
+    public Bagagem() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

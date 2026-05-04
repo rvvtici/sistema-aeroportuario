@@ -8,6 +8,8 @@ C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\config\CassandraConfig.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\config\PostgresConfig.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\config\RedisConfig.java
+C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\postgres\controller\AeroportoController.java
+C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\postgres\controller\PassageiroController.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\postgres\controller\PassagemController.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\postgres\controller\TicketController.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\postgres\controller\VooController.java

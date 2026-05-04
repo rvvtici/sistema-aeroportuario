@@ -1,8 +1,6 @@
 package postgres.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
 
 @Entity
 @Table(
@@ -11,8 +9,7 @@ import lombok.*;
         @Index(name = "idx_ticket_passagem", columnList = "passagem_id")
     }
 )
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+
 public class TicketVoo {
 
     @Id
@@ -31,4 +28,44 @@ public class TicketVoo {
     // Valores: AGUARDANDO | EMBARCADO | CANCELADO
     @Column(name = "status_embarque", nullable = false, length = 20)
     private String statusEmbarque = "AGUARDANDO";
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Passagem getPassagem() {
+        return passagem;
+    }
+
+    public void setPassagem(Passagem passagem) {
+        this.passagem = passagem;
+    }
+
+    public Boolean getPossuiBagagem() {
+        return possuiBagagem;
+    }
+
+    public void setPossuiBagagem(Boolean possuiBagagem) {
+        this.possuiBagagem = possuiBagagem;
+    }
+
+    public String getStatusEmbarque() {
+        return statusEmbarque;
+    }
+
+    public void setStatusEmbarque(String statusEmbarque) {
+        this.statusEmbarque = statusEmbarque;
+    }
+
+    public TicketVoo(Long id, Passagem passagem) {
+        this.id = id;
+        this.passagem = passagem;
+    }
+
+    public TicketVoo() {
+    }
 }

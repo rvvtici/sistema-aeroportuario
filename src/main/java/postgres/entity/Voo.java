@@ -2,7 +2,6 @@ package postgres.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,8 +16,6 @@ import java.time.LocalDateTime;
     }
 )
 // Check constraint — origem <> destino (definida no SQL do Flyway, anotada aqui para documentar)
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
 public class Voo {
 
     @Id
@@ -67,4 +64,117 @@ public class Voo {
     @NotBlank
     @Column(name = "status", nullable = false, length = 20)
     private String status = "PROGRAMADO";
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCompanhiaAerea() {
+        return companhiaAerea;
+    }
+
+    public void setCompanhiaAerea(String companhiaAerea) {
+        this.companhiaAerea = companhiaAerea;
+    }
+
+    public Aeroporto getOrigem() {
+        return origem;
+    }
+
+    public void setOrigem(Aeroporto origem) {
+        this.origem = origem;
+    }
+
+    public Aeroporto getDestino() {
+        return destino;
+    }
+
+    public void setDestino(Aeroporto destino) {
+        this.destino = destino;
+    }
+
+    public String getAeronave() {
+        return aeronave;
+    }
+
+    public void setAeronave(String aeronave) {
+        this.aeronave = aeronave;
+    }
+
+    public String getTerminal() {
+        return terminal;
+    }
+
+    public void setTerminal(String terminal) {
+        this.terminal = terminal;
+    }
+
+    public String getPortao() {
+        return portao;
+    }
+
+    public void setPortao(String portao) {
+        this.portao = portao;
+    }
+
+    public LocalDateTime getHorarioPartida() {
+        return horarioPartida;
+    }
+
+    public void setHorarioPartida(LocalDateTime horarioPartida) {
+        this.horarioPartida = horarioPartida;
+    }
+
+    public LocalDateTime getHorarioChegada() {
+        return horarioChegada;
+    }
+
+    public void setHorarioChegada(LocalDateTime horarioChegada) {
+        this.horarioChegada = horarioChegada;
+    }
+
+    public LocalDateTime getPrevisaoPartida() {
+        return previsaoPartida;
+    }
+
+    public void setPrevisaoPartida(LocalDateTime previsaoPartida) {
+        this.previsaoPartida = previsaoPartida;
+    }
+
+    public LocalDateTime getPrevisaoChegada() {
+        return previsaoChegada;
+    }
+
+    public void setPrevisaoChegada(LocalDateTime previsaoChegada) {
+        this.previsaoChegada = previsaoChegada;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Voo(Long id, String companhiaAerea, Aeroporto origem, Aeroporto destino, String aeronave, String terminal, String portao, LocalDateTime horarioPartida, LocalDateTime horarioChegada, LocalDateTime previsaoPartida, LocalDateTime previsaoChegada) {
+        this.id = id;
+        this.companhiaAerea = companhiaAerea;
+        this.origem = origem;
+        this.destino = destino;
+        this.aeronave = aeronave;
+        this.terminal = terminal;
+        this.portao = portao;
+        this.horarioPartida = horarioPartida;
+        this.horarioChegada = horarioChegada;
+        this.previsaoPartida = previsaoPartida;
+        this.previsaoChegada = previsaoChegada;
+    }
+
+    public Voo() {
+    }
 }

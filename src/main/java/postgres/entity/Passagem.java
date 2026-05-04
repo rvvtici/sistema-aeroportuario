@@ -2,7 +2,6 @@ package postgres.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -14,8 +13,7 @@ import java.time.LocalDateTime;
         @Index(name = "idx_passagem_cpf", columnList = "cpf_passageiro")
     }
 )
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+
 public class Passagem {
 
     @Id
@@ -53,4 +51,88 @@ public class Passagem {
     // Valores: ATIVA | CANCELADA | USADA
     @Column(name = "status", nullable = false, length = 20)
     private String status = "ATIVA";
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Passageiro getPassageiro() {
+        return passageiro;
+    }
+
+    public void setPassageiro(Passageiro passageiro) {
+        this.passageiro = passageiro;
+    }
+
+    public Voo getVoo() {
+        return voo;
+    }
+
+    public void setVoo(Voo voo) {
+        this.voo = voo;
+    }
+
+    public String getNumeroAssento() {
+        return numeroAssento;
+    }
+
+    public void setNumeroAssento(String numeroAssento) {
+        this.numeroAssento = numeroAssento;
+    }
+
+    public String getClasseAssento() {
+        return classeAssento;
+    }
+
+    public void setClasseAssento(String classeAssento) {
+        this.classeAssento = classeAssento;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+
+    public LocalDateTime getDataEmissao() {
+        return dataEmissao;
+    }
+
+    public void setDataEmissao(LocalDateTime dataEmissao) {
+        this.dataEmissao = dataEmissao;
+    }
+
+    public String getStatusPagamento() {
+        return statusPagamento;
+    }
+
+    public void setStatusPagamento(String statusPagamento) {
+        this.statusPagamento = statusPagamento;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Passagem(Long id, Passageiro passageiro, Voo voo, String numeroAssento, String classeAssento, BigDecimal preco) {
+        this.id = id;
+        this.passageiro = passageiro;
+        this.voo = voo;
+        this.numeroAssento = numeroAssento;
+        this.classeAssento = classeAssento;
+        this.preco = preco;
+    }
+
+    public Passagem() {
+    }
 }
