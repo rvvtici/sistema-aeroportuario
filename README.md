@@ -26,6 +26,46 @@ Construir uma base conceitual e arquitetural sólida para um sistema que:
 
 ---
 
+## Ferramentas
+- Docker
+- DBeaver
+
+## Funcionamento (em Arch Linux)
+```
+sudo pacman -S docker dbeaver # instalação o docker & dbveader
+sudo systemctl start docker.service # inicialização do docker
+sudoo systemctl enable docker.service # permissão ao docker
+sudo usermod -aG docker $USER # para que não seja mais necessário digitar sudo toda vez
+reboot # reinicialização para que o comando acima seja aplicado
+
+# PostgreSQL
+docker run --name nome-postgres -e POSTGRES_PASSWORD=user -e POSTGRES_USER=user -p 5454:5432 -d postgres // porta_sistema:porta_postgresql
+
+# Cassandra
+docker run --name nome-cassandra -e CASSANDRA_USER=user -e CASSANDRA_PASSWORD=user -p 9042:9042 -d cassandra
+
+# Redis
+docker run --name nome-redis -p 6379:6379 -d redis redis-server --requirepass "user"
+
+docker ps -a # verifique se os três databases estão rodando
+
+# no DBeaver:
+# conecte os databases
+# selecione o postgresql/cassandra/redis
+# configure como host: localhost & port: 5454/9042/6379; username & senha = user
+# teste a conexão
+# vá em postgresql/cassandra/redis e em show all databases para visualizá-los no dbeaver
+
+docker ps -a //all imagens
+
+#comandos úteis
+docker stop nome-cassandra nome-redis nome-postgres     # parar
+docker start nome-cassandra nome-redis nome-postgres    # iniciar novamente
+docker rm nome-cassandra nome-redis nome-postgres       # remover container
+docker ps -a                                            # listar todos (rodando ou não)
+```
+
+
 ## Arquitetura de Dados
 
 O sistema utiliza três bancos de dados com papéis bem definidos:
