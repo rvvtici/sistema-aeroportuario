@@ -18,12 +18,12 @@ postgres\entity\TicketVoo.class
 postgres\controller\AeroportoController.class
 cassandra\entity\LogEvento.class
 postgres\controller\VooController.class
-com\airport\airport\management\AirportManagement.class
 postgres\service\PassagemService.class
 postgres\repository\PassagemRepository.class
 postgres\controller\TicketController.class
 cassandra\service\LogService.class
 postgres\repository\TicketVooRepository.class
+com\airport\AirportApplication.class
 cassandra\controller\LogController.class
 cassandra\entity\EventoBagagem.class
 redis\controller\StatusVooController.class

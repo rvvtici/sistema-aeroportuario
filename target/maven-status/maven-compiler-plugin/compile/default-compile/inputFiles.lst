@@ -4,7 +4,7 @@ C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\cassandra\repository\EventoBagagemRepository.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\cassandra\repository\LogEventoRepository.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\cassandra\service\LogService.java
-C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\com\airport\airport\management\AirportManagement.java
+C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\com\airport\AirportApplication.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\config\CassandraConfig.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\config\PostgresConfig.java
 C:\Users\caeda\OneDrive - FEI\Documentos\NetBeansProjects\airport-management\src\main\java\config\RedisConfig.java
