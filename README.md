@@ -65,6 +65,45 @@ docker rm nome-cassandra nome-redis nome-postgres       # remover container
 docker ps -a                                            # listar todos (rodando ou não)
 ```
 
+## Estrutura do Projeto 
+O backend envolve uma aplicação Java + Spring Boot organizada em um único projeto Maven, com três módulos distintos (um por banco de dados). A separação por pacotes descreve qual banco está sendo acionado em cada operação.
+```bash
+airport-management/
+├── docker-compose.yml              # Sobe PostgreSQL, Cassandra e Redis localmente
+├── pom.xml                         # Dependências e configuração do Maven
+└── src/
+    └── main/
+        ├── java/com/airport/
+        │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
+        │   │
+        │   ├── config/                         # Configuração dos três bancos
+        │   │   ├── PostgresConfig.java         # Ativa JPA repositories e @Transactional
+        │   │   ├── CassandraConfig.java        # Conexão e keyspace do Cassandra
+        │   │   └── RedisConfig.java            # RedisTemplate com serialização String
+        │   │
+        │   ├── postgres/                       # Módulo relacional — dados transacionais críticos
+        │   │   ├── entity/                     # Entidades JPA mapeadas para o PostgreSQL
+        │   │   ├── repository/                 # Interfaces JpaRepository (CRUD gerado automaticamente)
+        │   │   ├── service/                    # Regras de negócio e @Transactional
+        │   │   └── controller/                 # Endpoints REST (/api/voos, /api/passagens etc.)
+        │   │
+        │   ├── cassandra/                      # Módulo de logs — dados massivos e contínuos
+        │   │   ├── entity/                     # Entidades @Table mapeadas para o Cassandra
+        │   │   ├── repository/                 # Interfaces CassandraRepository
+        │   │   ├── service/                    # Lógica de registro de eventos e telemetria
+        │   │   └── controller/                 # Endpoints REST (/api/logs etc.)
+        │   │
+        │   └── redis/                          # Módulo de status em tempo real — dados voláteis e cache
+        │       ├── service/                    # Operações com RedisTemplate (get/set de status)
+        │       └── controller/                 # Endpoints REST (/api/status etc.)
+        │
+        └── resources/
+            ├── application.yml                 # Configuração dos três bancos (URLs, portas, credenciais)
+            └── db/
+                └── migration/
+                    ├── V1__create_tables.sql   # DDL — criação das tabelas do PostgreSQL (Flyway)
+                    └── V2__seed_data.sql       # DML — população inicial dos dados (Flyway)
+```
 
 ## Arquitetura de Dados
 
