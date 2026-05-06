@@ -77,8 +77,8 @@ CREATE TABLE bagagem (
 --  DDL — ÍNDICES ÚTEIS
 -- ============================================================
 
-CREATE INDEX idx_voo_origem     ON voo(origem_id);
-CREATE INDEX idx_voo_destino    ON voo(destino_id);
+CREATE INDEX idx_voo_origem     ON voo(origem);
+CREATE INDEX idx_voo_destino    ON voo(destino);
 CREATE INDEX idx_voo_partida    ON voo(horario_partida);
 CREATE INDEX idx_passagem_voo   ON passagem(voo_id);
 CREATE INDEX idx_passagem_cpf   ON passagem(cpf_passageiro);

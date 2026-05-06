@@ -14,7 +14,7 @@ INSERT INTO aeroporto (nome, iata, cidade, uf, pais, fuso_horario) VALUES
 ('Aeroporto Charles de Gaulle',             'CDG', 'Paris',            NULL, 'França',   'Europe/Paris');
 
 -- Voos
-INSERT INTO voo (companhia_aerea, origem_id, destino_id, aeronave, terminal, portao, horario_partida, horario_chegada, previsao_partida, previsao_chegada, status) VALUES
+INSERT INTO voo (companhia_aerea, origem, destino, aeronave, terminal, portao, horario_partida, horario_chegada, previsao_partida, previsao_chegada, status) VALUES
 ('LATAM Airlines',  1, 2, 'Airbus A320',   'T1', 'A12', '2025-08-10 06:00:00', '2025-08-10 07:10:00', '2025-08-10 06:05:00', '2025-08-10 07:15:00', 'PROGRAMADO'),
 ('Gol',             2, 3, 'Boeing 737-800','T2', 'B03', '2025-08-10 08:30:00', '2025-08-10 10:00:00', '2025-08-10 08:45:00', '2025-08-10 10:15:00', 'ATRASADO'),
 ('Azul',            3, 4, 'Embraer E195',  'T1', 'C07', '2025-08-10 11:00:00', '2025-08-10 12:15:00', '2025-08-10 11:00:00', '2025-08-10 12:15:00', 'EMBARCANDO'),
