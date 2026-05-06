@@ -1,11 +1,8 @@
-# Sistema de Gestão Aeroportuária
+# GLIDER - Sistema de Gestão Aeroportuária
 
 ## Visão Geral
 
-Este projeto tem como objetivo o desenvolvimento de um sistema de gestão interna aeroportuária, com foco em operações, monitoramento e atualização de status de voos, integrando front-end e back-end e utilizando múltiplos bancos de dados.
-
-O sistema não é voltado para passageiros, mas sim para uso interno por operadores aeroportuários, atendentes, supervisores e sistemas automatizados, permitindo:
-
+***Glider*** é um sistema de gerenciamento aeroportuário voltado para operações internas e monitoramento em tempo real, utilizando uma arquitetura baseada em múltiplos bancos de dados. O sistema permite:
 - Gerenciamento de voos e aeroportos  
 - Controle de passagens, tickets (check-in) e bagagens  
 - Atualização de status operacionais em tempo real  
@@ -15,21 +12,56 @@ O sistema não é voltado para passageiros, mas sim para uso interno por operado
 
 ## Objetivo do Projeto
 
-Construir uma base conceitual e arquitetural sólida para um sistema que:
+Construir uma arquitetura escalável que:
 
 - Centralize dados críticos em um banco relacional
-- Utilize bancos não relacionais para:
+- Utilize bancos NoSQL para:
   - status em tempo real
   - logs/auditoria
 - Permita sincronização e comunicação entre os bancos
-- Seja escalável e adaptável a mudanças operacionais
+- Simule um cenário real de sistemas distribuídos
 
 ---
 
-## Ferramentas
+## Tecnologias Utilizadas
+- Java 17
+- Spring Boot
+- Maven
+- PostgreSQL
+- Cassandra
+- Redis
 - Docker
-- DBeaver
+- Dbeaver (opcional, para visualização dos bancos)
 
+## Como Executar o Projeto 
+Pré-requisitos:
+- Docker Desktop
+- Java 17
+- Maven
+
+### Subindo o ambiente
+Ao acessar a pasta do projeto, rodar:
+```bash
+docker-compose up -d
+```
+E verificar se os containers foram gerados:
+```bash
+docker ps
+```
+Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-2 minutos) e validar com:
+```bash
+docker exec -it airport_cassandra cqlsh
+```
+Se o comando entrar em **cqlsh**, significa que está pronto para rodar. Basta digitar EXIT para voltar ao comando.
+
+Finalmente, rodar o backend por:
+```bash
+mvn spring-boot:run
+```
+A aplicação estará disponível em:
+```bash
+http://localhost:8080
+```
 ## Funcionamento (em Arch Linux)
 ```
 sudo pacman -S docker dbeaver # instalação o docker & dbveader
@@ -65,8 +97,14 @@ docker rm nome-cassandra nome-redis nome-postgres       # remover container
 docker ps -a                                            # listar todos (rodando ou não)
 ```
 
+## Frontend (Monitoramento)
+O projeto possui um frontend simples para simulação de telões operacionais. Ao consumir os endpoints REST do backend, temos a exibição de:
+- Status de voos
+- Portões
+- Bagagens e Tickets?
+
 ## Estrutura do Projeto 
-O backend envolve uma aplicação Java + Spring Boot organizada em um único projeto Maven, com três módulos distintos (um por banco de dados). A separação por pacotes descreve qual banco está sendo acionado em cada operação.
+O backend é uma aplicação Java com Spring Boot organizada em um único projeto Maven. A arquitetura é dividida por responsabilidade de banco de dados (PostgreSQL, Cassandra e Redis), com separação em camadas.
 ```bash
 airport-management/
 ├── docker-compose.yml              # Sobe PostgreSQL, Cassandra e Redis localmente
@@ -76,57 +114,70 @@ airport-management/
         ├── java/com/airport/
         │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
         │   │
-        │   ├── config/                         # Configuração dos três bancos
-        │   │   ├── PostgresConfig.java         # Ativa JPA repositories e @Transactional
-        │   │   ├── CassandraConfig.java        # Conexão e keyspace do Cassandra
-        │   │   └── RedisConfig.java            # RedisTemplate com serialização String
+        │   ├── config/                         # Configurações da integração com os bancos
+        │   │   ├── PostgresConfig.java         
+        │   │   ├── CassandraConfig.java        
+        │   │   └── RedisConfig.java            
         │   │
-        │   ├── postgres/                       # Módulo relacional — dados transacionais críticos
-        │   │   ├── entity/                     # Entidades JPA mapeadas para o PostgreSQL
-        │   │   ├── repository/                 # Interfaces JpaRepository (CRUD gerado automaticamente)
-        │   │   ├── service/                    # Regras de negócio e @Transactional
-        │   │   └── controller/                 # Endpoints REST (/api/voos, /api/passagens etc.)
+        │   ├── postgres/                       # Banco relacional — dados transacionais críticos
+        │   │   ├── entity/                     # Entidades JPA
+        │   │   ├── repository/                 # Interfaces JpaRepository
+        │   │   ├── service/                    # Regras de negócio
+        │   │   └── controller/                 # Endpoints REST
         │   │
-        │   ├── cassandra/                      # Módulo de logs — dados massivos e contínuos
-        │   │   ├── entity/                     # Entidades @Table mapeadas para o Cassandra
-        │   │   ├── repository/                 # Interfaces CassandraRepository
-        │   │   ├── service/                    # Lógica de registro de eventos e telemetria
-        │   │   └── controller/                 # Endpoints REST (/api/logs etc.)
+        │   ├── cassandra/                      # Banco de logs/eventos — dados massivos e contínuos
+        │   │   ├── entity/                     # Entidades @Table
+        │   │   ├── repository/                 # Interfaces
+        │   │   ├── service/                    # Lógica de registro
+        │   │   └── controller/                 # Endpoints REST 
         │   │
-        │   └── redis/                          # Módulo de status em tempo real — dados voláteis e cache
-        │       ├── service/                    # Operações com RedisTemplate (get/set de status)
-        │       └── controller/                 # Endpoints REST (/api/status etc.)
+        │   └── redis/                          # Banco de status em tempo real — dados voláteis e cache
+        │       ├── service/                    # Operações com RedisTemplate
+        │       └── controller/                 # Endpoints REST
         │
         └── resources/
-            ├── application.yml                 # Configuração dos três bancos (URLs, portas, credenciais)
+            ├── application.yml                 # Configuração dos bancos (URLs, portas, credenciais)
+            │
+            ├── static/                         # Frontend simples (servido pelo Spring)
+            │   └── index.html                  # Telão/monitoramento
             └── db/
-                └── migration/
-                    ├── V1__create_tables.sql   # DDL — criação das tabelas do PostgreSQL (Flyway)
-                    └── V2__seed_data.sql       # DML — população inicial dos dados (Flyway)
+                ├── migration/                  # Scripts do Flyway (PostgreSQL)
+                │   ├── V1__create_tables.sql   # DDL — criação das tabelas do PostgreSQL (Flyway)
+                │   └── V2__seed_data.sql       # DML — população inicial dos dados (Flyway)
+                │
+                └── cassandra/                  # Scripts CQL (Cassandra)
+                    └── schema.cql              # Criação de keyspace/tabelas de log
 ```
 
 ## Arquitetura de Dados
 
-O sistema utiliza três bancos de dados com papéis bem definidos:
+O sistema utiliza três bancos, cada um com papéis bem definidos:
 
-### Banco Relacional (dados críticos)
-Fonte da verdade do sistema.  
-Armazena dados estruturais e permanentes, como:
-
-- Pessoas, passageiros e funcionários
+### PostgreSQL - Dados Críticos
+Armazena dados estruturais e persistentes, como:
+- Passageiros
 - Aeroportos
 - Voos
 - Passagens
-- Tickets de voo (check-in)
+- Tickets de voo
 - Bagagens
 
-Esses dados seguem regras de integridade, normalização e relacionamentos bem definidos (PK/FK).
+#### Modelagem de Dados (MER / DER)
+Gerado através do LucidChart.
+<img width="1645" height="840" alt="image" src="https://github.com/user-attachments/assets/9e7c9f1d-c449-4139-9c6b-e5c59efbebb9" />
 
 ---
 
-### Banco Não Relacional – Status em Tempo Real
-Responsável por armazenar informações altamente voláteis, como:
+### Cassandra - Logs e Auditoria
+Registra todos os eventos do sistema, como:
+- Atualizações de status
+- Mudanças de portão
+- Atualizações operacionais
 
+---
+
+### Redis - Status em Tempo Real
+Armazena dados voláteis, como:
 - Status atual do voo
 - Horários reais de partida e chegada
 - Alterações de portão
@@ -137,21 +188,63 @@ Esses dados podem ser sincronizados com o banco relacional quando necessário.
 
 ---
 
-### Banco Não Relacional – Logs
-Responsável por registrar todos os eventos do sistema, como:
+## Entidades principais
 
-- Alterações manuais realizadas por usuários
-- Atualizações automáticas de status
-- Mudanças de voo, portão, horário ou paradas
-- Origem do evento (humana ou automática)
+### Passageiro
+- Nome completo
+- CPF (PK)
+- Endereço
+- E-mail
+- Telefone
+- Data de nascimento
 
-⚠️ Os logs não alteram dados, apenas registram eventos para auditoria e rastreabilidade.
+### Voo
+- ID (PK)
+- Origem e destino (através do IATA)
+- Companhia aérea
+- Horários
+- Portão
+- Aeronave
+- Terminal
+- Status base do voo
+---
+
+### Passagem
+Representa a **compra do direito de viajar**:
+- ID (PK)
+- Passageiro
+- Voo
+- Preço
+- Número do assento
+- Classe do assento
+- Data de emissão
+- Status de pagamento (FK)
+- Status de embarque
+
+A passagem existe mesmo que o passageiro não realize o embarque.
 
 ---
 
-## Modelagem de Dados (MER / DER)
+### Ticket de Voo (Check‑in)
+Representa a **confirmação operacional para embarque**:
+- ID próprio (PK)
+- Possui bagagem (boolean)
+- Status de embarque
 
-<img width="1645" height="840" alt="image" src="https://github.com/user-attachments/assets/9e7c9f1d-c449-4139-9c6b-e5c59efbebb9" />
+O ticket **só pode ser criado se a passagem estiver paga**.
+
+---
+
+### Bagagem
+Entidade dependente do ticket:
+- ID próprio (PK)
+- Associação com ticket
+- Peso
+- Status da bagagem
+
+Um ticket pode possuir zero ou mais bagagens.
+
+---
 
 ### Aeroporto
 Dados estruturais e críticos:
@@ -164,53 +257,7 @@ Dados estruturais e críticos:
 
 ---
 
-### Voo
-Representa um voo operacional:
-- Origem e destino (Aeroporto)
-- Companhia aérea
-- Previsão e horários reais
-- Portão, terminal, aeronave
-- Status base do voo
-
----
-
-### Passagem
-Representa a **compra do direito de viajar**:
-- Passageiro
-- Voo
-- Preço
-- Classe do assento
-- Data de emissão
-- Status de pagamento
-
-A passagem existe mesmo que o passageiro não realize o embarque.
-
----
-
-### Ticket de Voo (Check‑in)
-Representa a **confirmação operacional para embarque**:
-- ID próprio
-- Associação com a passagem
-- Número do assento confirmado
-- Possui bagagem (boolean)
-- Status de embarque
-
-O ticket **só pode ser criado se a passagem estiver paga**.
-
----
-
-### Bagagem
-Entidade dependente do ticket:
-- ID próprio
-- Associação com ticket
-- Peso
-- Status da bagagem
-
-Um ticket pode possuir zero ou mais bagagens.
-
----
-
-## Separação conceitual importante
+## Conceitos importantes
 
 - **Passagem ≠ Ticket**
   - Passagem → compra / contrato
@@ -218,8 +265,6 @@ Um ticket pode possuir zero ou mais bagagens.
 - **Status de pagamento ≠ Status de embarque**
   - Pagamento pertence à passagem
   - Embarque pertence ao ticket
-
-Essa separação evita inconsistências e facilita o acompanhamento operacional.
 
 ---
 
@@ -230,23 +275,10 @@ O sistema foi pensado para diferentes perfis internos, como:
 - Operadores de voo
 - Supervisores
 - Gestores aeroportuários
-- Sistemas automáticos de status
-
-Cada perfil terá permissões e responsabilidades distintas, a serem definidas nas próximas etapas.
+- Sistemas automatizados
 
 ---
+## Autoria
+Desenvolvido por **Ana Lima** e **Ravi Macedo**.
 
-## Estado Atual do Projeto
-
-✅ Modelagem conceitual (MER/DER) finalizada  
-✅ Definição clara de entidades, atributos e relacionamentos  
-✅ Arquitetura de dados com múltiplos bancos definida  
-✅ Regras de negócio principais identificadas  
-
----
-
-## Próximos Passos
-
-- Definição dos **casos de uso**
-- Mapeamento das **operações de back-end**
-- Definição de **APIs**
+## Professor Responsável: Leonardo Anjoletto Ferreira
