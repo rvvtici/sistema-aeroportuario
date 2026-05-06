@@ -1,13 +1,38 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package redis.controller;
 
-/**
- *
- * @author caeda
- */
+import org.springframework.web.bind.annotation.*;
+import redis.service.StatusVooService;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/status/voos")
 public class StatusVooController {
-    
+
+    private final StatusVooService statusVooService;
+
+    public StatusVooController(StatusVooService statusVooService) {
+        this.statusVooService = statusVooService;
+    }
+
+    // GET /api/status/voos/1
+    // Retorna: { "status": "EMBARCANDO", "portao": "A12" }
+    @GetMapping("/{id}")
+    public Map<Object, Object> buscarStatus(@PathVariable Long id) {
+        return statusVooService.buscarStatus(id);
+    }
+
+    // PATCH /api/status/voos/1/status?valor=CANCELADO
+    @PatchMapping("/{id}/status")
+    public void atualizarStatus(@PathVariable Long id,
+                                 @RequestParam String valor) {
+        statusVooService.atualizarStatus(id, valor);
+    }
+
+    // PATCH /api/status/voos/1/portao?valor=B03
+    @PatchMapping("/{id}/portao")
+    public void atualizarPortao(@PathVariable Long id,
+                                 @RequestParam String valor) {
+        statusVooService.atualizarPortao(id, valor);
+    }
 }

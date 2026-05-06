@@ -42,23 +42,25 @@ public class VooService {
         return vooRepository.save(voo);
     }
 
+  
+  // VooService.atualizar() — retira status e portão daqui
     @Transactional
     public Voo atualizar(Long id, Voo dadosNovos) {
-        Voo voo = buscarPorId(id);
-        voo.setCompanhiaAerea(dadosNovos.getCompanhiaAerea());
-        voo.setOrigem(dadosNovos.getOrigem());
-        voo.setDestino(dadosNovos.getDestino());
-        voo.setAeronave(dadosNovos.getAeronave());
-        voo.setTerminal(dadosNovos.getTerminal());
-        voo.setPortao(dadosNovos.getPortao());
-        voo.setHorarioPartida(dadosNovos.getHorarioPartida());
-        voo.setHorarioChegada(dadosNovos.getHorarioChegada());
-        voo.setPrevisaoPartida(dadosNovos.getPrevisaoPartida());
-        voo.setPrevisaoChegada(dadosNovos.getPrevisaoChegada());
-        voo.setStatus(dadosNovos.getStatus());
-        return vooRepository.save(voo);
+      Voo voo = buscarPorId(id);
+      voo.setCompanhiaAerea(dadosNovos.getCompanhiaAerea());
+      voo.setOrigem(dadosNovos.getOrigem());
+      voo.setDestino(dadosNovos.getDestino());
+      voo.setAeronave(dadosNovos.getAeronave());
+      voo.setTerminal(dadosNovos.getTerminal());
+    // portao e status saem daqui — gerenciados pelo StatusVooService
+      voo.setHorarioPartida(dadosNovos.getHorarioPartida());
+      voo.setHorarioChegada(dadosNovos.getHorarioChegada());
+      voo.setPrevisaoPartida(dadosNovos.getPrevisaoPartida());
+      voo.setPrevisaoChegada(dadosNovos.getPrevisaoChegada());
+      return vooRepository.save(voo);
     }
 
+    
     @Transactional
     public void deletar(Long id) {
         buscarPorId(id); // garante que existe antes de deletar
