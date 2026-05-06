@@ -3,12 +3,12 @@
 spring:
   application:
     name: airport-management
-
-  # ── PostgreSQL ──────────────────────────────────────────────
   datasource:
+    hikari:
+      connection-timeout: 30000
     url: jdbc:postgresql://localhost:5432/airport
     username: postgres
-    password:
+    password: postgres
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -22,7 +22,7 @@ spring:
 
   # ── Flyway (migrations do PostgreSQL) ───────────────────────
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migration
     baseline-on-migrate: true
 
