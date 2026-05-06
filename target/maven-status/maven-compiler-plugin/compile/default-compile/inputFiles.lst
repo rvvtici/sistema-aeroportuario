@@ -33,7 +33,9 @@ C:\Users\caeda\sistema-aeroportuario\src\main\java\postgres\service\PassageiroSe
 C:\Users\caeda\sistema-aeroportuario\src\main\java\postgres\service\PassagemService.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\postgres\service\TicketService.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\postgres\service\VooService.java
+C:\Users\caeda\sistema-aeroportuario\src\main\java\redis\controller\RedisController.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\redis\controller\StatusBagagemController.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\redis\controller\StatusVooController.java
+C:\Users\caeda\sistema-aeroportuario\src\main\java\redis\service\RedisService.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\redis\service\StatusBagagemService.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\redis\service\StatusVooService.java
