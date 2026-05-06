@@ -8,6 +8,7 @@ postgres\entity\Aeroporto.class
 postgres\repository\PassageiroRepository.class
 postgres\repository\VooRepository.class
 config\CassandraConfig.class
+redis\service\RedisService.class
 cassandra\repository\LogConfirmacaoRepository.class
 postgres\controller\PassageiroController.class
 redis\service\StatusVooService.class
@@ -36,4 +37,5 @@ postgres\entity\Passagem.class
 cassandra\entity\LogCancelamento.class
 config\PostgresConfig.class
 postgres\repository\AeroportoRepository.class
+redis\controller\RedisController.class
 postgres\service\PassageiroService.class
