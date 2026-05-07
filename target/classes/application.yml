@@ -1,20 +1,18 @@
-## YAML Template.
----
 spring:
   application:
     name: airport-management
   datasource:
     hikari:
       connection-timeout: 30000
-    url: jdbc:postgresql://localhost:5432/airport
+    url: jdbc:postgresql://localhost:5433/airport
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: validate        # Flyway cuida do schema — JPA só valida
-    show-sql: true              # Mostra queries no console (útil para debug)
+      ddl-auto: validate        
+    show-sql: true              
     properties:
       hibernate:
         format_sql: true
@@ -22,7 +20,10 @@ spring:
 
   # ── Flyway (migrations do PostgreSQL) ───────────────────────
   flyway:
-    enabled: false
+    enabled: true
+    url: jdbc:postgresql://localhost:5433/airport
+    user: postgres
+    password: postgres
     locations: classpath:db/migration
     baseline-on-migrate: true
 
@@ -32,7 +33,7 @@ spring:
     port: 9042
     keyspace-name: airport_logs
     local-datacenter: datacenter1
-    schema-action: CREATE_IF_NOT_EXISTS   # Cassandra cria o schema sozinho
+    schema-action: CREATE_IF_NOT_EXISTS   
 
   # ── Redis ───────────────────────────────────────────────────
   data:

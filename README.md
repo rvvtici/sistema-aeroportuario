@@ -1,4 +1,4 @@
-# GLIDER - Sistema de Gestão Aeroportuária
+# 🪂 GLIDER - Sistema de Gestão Aeroportuária
 
 ## Visão Geral
 
@@ -33,7 +33,7 @@ Construir uma arquitetura escalável que:
 - Docker
 - Dbeaver (opcional, para visualização dos bancos)
 
-## Como Executar o Projeto 
+## Como Executar o Projeto usando o Windows
 Pré-requisitos:
 - Docker Desktop
 - Java 17
