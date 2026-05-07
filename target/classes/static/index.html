@@ -1,29 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Monitoramento Aeroporto</title>
-</head>
-<body>
-
-<h1>Painel de Voos</h1>
-
-<div id="voo"></div>
-
-<script>
-async function carregarVoo() {
-    const response = await fetch('http://localhost:8080/api/voo/123');
-    const data = await response.json();
-
-    document.getElementById("voo").innerHTML = `
-        <p>Status: ${data.status}</p>
-        <p>Portão: ${data.portao}</p>
-        <p>Horário: ${data.horario_saida}</p>
-    `;
-}
-
-// atualiza a cada 3 segundos (simulando tempo real)
-setInterval(carregarVoo, 3000);
-</script>
-
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>airport-frontend</title>
+    <script type="module" crossorigin src="/assets/index-Bb-jbe8u.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DykytF2W.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>

@@ -1,4 +1,4 @@
-:package cassandra.repository;
+package cassandra.repository;
 
 import cassandra.entity.LogConfirmacao;
 import org.springframework.data.cassandra.repository.CassandraRepository;
