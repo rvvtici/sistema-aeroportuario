@@ -1,0 +1,9 @@
+-- passagem
+ALTER TABLE passagem ALTER COLUMN cpf_passageiro TYPE VARCHAR(11);
+
+-- voo
+ALTER TABLE voo ALTER COLUMN origem TYPE VARCHAR(3);
+ALTER TABLE voo ALTER COLUMN destino TYPE VARCHAR(3);
+
+-- passageiro
+ALTER TABLE passageiro ALTER COLUMN cpf TYPE VARCHAR(11);

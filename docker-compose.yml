@@ -29,6 +29,7 @@ services:
       - CASSANDRA_DC=datacenter1
     volumes:
       - cassandra_data:/var/lib/cassandra
+      - ./cassandra-init.cql:/docker-entrypoint-initdb.d/init.cql
     healthcheck:
       test: ["CMD-SHELL", "cqlsh -e 'describe cluster'"]
       interval: 30s

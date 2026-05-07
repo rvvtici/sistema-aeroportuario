@@ -71,24 +71,24 @@ sudo usermod -aG docker $USER # para que não seja mais necessário digitar sudo
 reboot # reinicialização para que o comando acima seja aplicado
 
 # PostgreSQL
-docker run --name nome-postgres -e POSTGRES_PASSWORD=user -e POSTGRES_USER=user -p 5454:5432 -d postgres // porta_sistema:porta_postgresql
+docker run --name airport_postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -p 5433:5432 -d postgres
 
 # Cassandra
-docker run --name nome-cassandra -e CASSANDRA_USER=user -e CASSANDRA_PASSWORD=user -p 9042:9042 -d cassandra
+docker run --name airport_cassandra -p 9042:9042 -d cassandra
 
 # Redis
-docker run --name nome-redis -p 6379:6379 -d redis redis-server --requirepass "user"
+docker run --name airport_redis -p 6379:6379 -d redis redis-server
 
 docker ps -a # verifique se os três databases estão rodando
 
 # no DBeaver:
 # conecte os databases
 # selecione o postgresql/cassandra/redis
-# configure como host: localhost & port: 5454/9042/6379; username & senha = user
+# configure como host: localhost & port: 5433/9042/6379; username & senha do postgresql = postgres
 # teste a conexão
 # vá em postgresql/cassandra/redis e em show all databases para visualizá-los no dbeaver
 
-docker ps -a //all imagens
+docker ps -a
 
 #comandos úteis
 docker stop nome-cassandra nome-redis nome-postgres     # parar
@@ -147,6 +147,31 @@ airport-management/
                 │
                 └── cassandra/                  # Scripts CQL (Cassandra)
                     └── schema.cql              # Criação de keyspace/tabelas de log
+    frontend
+        airport-frontend
+            enlist.config.js
+            node_modules
+            package.json
+            index.html
+            package-lock.json
+            vite.config.js
+            src
+                App.css
+                App.jsx
+                api.js
+                index.css
+                main.jsx
+                assets
+                    hero.png
+                    react.svg
+                    vite.svg
+                components
+                    BagagemCard.jsx
+                    StatusBadge.jsx
+                    TimeDisplay.jsx
+                    VooRow.jsx
+                hooks
+                    usePolling.js
 ```
 
 ## Arquitetura de Dados
