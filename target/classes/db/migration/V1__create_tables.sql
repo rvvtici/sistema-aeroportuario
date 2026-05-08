@@ -51,7 +51,8 @@ CREATE TABLE passagem (
     preco               DECIMAL(10,2)   NOT NULL,
     data_emissao        TIMESTAMP       NOT NULL DEFAULT NOW(),
     status_pagamento    VARCHAR(20)     NOT NULL DEFAULT 'PENDENTE',  -- 'PENDENTE' | 'PAGO' | 'CANCELADO'
-    status              VARCHAR(20)     NOT NULL DEFAULT 'ATIVA'       -- 'ATIVA' | 'CANCELADA' | 'USADA'
+    status              VARCHAR(20)     NOT NULL DEFAULT 'ATIVA',       -- 'ATIVA' | 'CANCELADA' | 'USADA'
+    CONSTRAINT uq_voo_assento UNIQUE (voo_id, numero_assento) -- Impede passageiros de ter mesmo assento para mesmo voo
 );
 
 -- Ticket de voo (gerado pela passagem)
@@ -66,6 +67,7 @@ CREATE TABLE ticket_de_voo (
 
 -- Bagagem (passageiro possui bagagem via ticket)
 -- status é integração com Redis (negrito/itálico no DER)
+-- status: 'CHECK-IN' | 'DESPACHADA' | 'TRIAGEM' | 'EMBARCADA' | 'DESEMBARCADA' | 'ESTEIRA' | 'EXTRAVIADA' | 'RETIDA' | 'RETIRADA'
 CREATE TABLE bagagem (
     id              SERIAL PRIMARY KEY,
     ticket_id       INT             NOT NULL REFERENCES ticket_de_voo(id),
@@ -84,4 +86,3 @@ CREATE INDEX idx_passagem_voo   ON passagem(voo_id);
 CREATE INDEX idx_passagem_cpf   ON passagem(cpf_passageiro);
 CREATE INDEX idx_ticket_passagem ON ticket_de_voo(passagem_id);
 CREATE INDEX idx_bagagem_ticket  ON bagagem(ticket_id);
-

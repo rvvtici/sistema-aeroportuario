@@ -1,4 +1,17 @@
 -- ============================================================
+-- LIMPEZA DAS TABELAS
+-- ============================================================
+
+TRUNCATE TABLE
+    bagagem,
+    ticket_de_voo,
+    passagem,
+    voo,
+    passageiro,
+    aeroporto
+RESTART IDENTITY CASCADE;
+
+-- ============================================================
 --  DML — POPULAÇÃO DE DADOS
 -- ============================================================
 
@@ -7,33 +20,91 @@ INSERT INTO aeroporto (nome, iata, cidade, uf, pais, fuso_horario) VALUES
 ('Aeroporto Internacional de Guarulhos',    'GRU', 'Guarulhos',        'SP', 'Brasil',   'America/Sao_Paulo'),
 ('Aeroporto Santos Dumont',                 'SDU', 'Rio de Janeiro',   'RJ', 'Brasil',   'America/Sao_Paulo'),
 ('Aeroporto Internacional de Brasília',     'BSB', 'Brasília',         'DF', 'Brasil',   'America/Sao_Paulo'),
+('Aeroporto Internacional de Viracopos', 'VCP', 'Campinas', 'SP', 'Brasil', 'America/Sao_Paulo'),
+('Aeroporto Campo de Marte',             'RTE', 'São Paulo', 'SP', 'Brasil', 'America/Sao_Paulo'),
 ('Aeroporto Internacional de Confins',      'CNF', 'Belo Horizonte',   'MG', 'Brasil',   'America/Sao_Paulo'),
 ('Aeroporto Internacional de Heathrow',     'LHR', 'Londres',          NULL, 'Reino Unido', 'Europe/London'),
 ('Aeroporto Internacional JFK',             'JFK', 'Nova Iorque',      NULL, 'EUA',      'America/New_York'),
 ('Aeroporto Internacional de Miami',        'MIA', 'Miami',            NULL, 'EUA',      'America/New_York'),
-('Aeroporto Charles de Gaulle',             'CDG', 'Paris',            NULL, 'França',   'Europe/Paris');
+('Aeroporto Charles de Gaulle',             'CDG', 'Paris',            NULL, 'França',   'Europe/Paris'),
+('Aeroporto Internacional Tom Jobim', 'GIG', 'Rio de Janeiro', 'RJ', 'Brasil', 'America/Sao_Paulo'),
+('Aeroporto Internacional de Congonhas',           'CGH', 'São Paulo',        'SP', 'Brasil',       'America/Sao_Paulo'),
+('Aeroporto Internacional Salgado Filho',          'POA', 'Porto Alegre',     'RS', 'Brasil',       'America/Sao_Paulo'),
+('Aeroporto Internacional Afonso Pena',            'CWB', 'Curitiba',         'PR', 'Brasil',       'America/Sao_Paulo'),
+('Aeroporto Internacional Pinto Martins',          'FOR', 'Fortaleza',        'CE', 'Brasil',       'America/Fortaleza'),
+('Aeroporto Internacional Deputado Luís Eduardo',  'SSA', 'Salvador',         'BA', 'Brasil',       'America/Bahia'),
+('Aeroporto Internacional Eduardo Gomes',          'MAO', 'Manaus',           'AM', 'Brasil',       'America/Manaus'),
+('Aeroporto Internacional de Recife',              'REC', 'Recife',           'PE', 'Brasil',       'America/Recife'),
+('Aeroporto Internacional Hercílio Luz',           'FLN', 'Florianópolis',    'SC', 'Brasil',       'America/Sao_Paulo'),
+('Aeroporto Internacional de Barajas',             'MAD', 'Madri',            NULL, 'Espanha',      'Europe/Madrid'),
+('Aeroporto Internacional de Frankfurt',           'FRA', 'Frankfurt',        NULL, 'Alemanha',     'Europe/Berlin'),
+('Aeroporto Internacional de Roma Fiumicino',      'FCO', 'Roma',             NULL, 'Itália',       'Europe/Rome'),
+('Aeroporto Internacional Haneda',                 'HND', 'Tóquio',           NULL, 'Japão',        'Asia/Tokyo'),
+('Aeroporto Internacional de Dubai',               'DXB', 'Dubai',            NULL, 'Emirados Árabes', 'Asia/Dubai'),
+('Aeroporto Internacional de Toronto Pearson',     'YYZ', 'Toronto',          NULL, 'Canadá',       'America/Toronto'),
+('Aeroporto Internacional El Dorado',              'BOG', 'Bogotá',           NULL, 'Colômbia',    'America/Bogota');
 
 -- Voos
 INSERT INTO voo (companhia_aerea, origem, destino, aeronave, terminal, portao, horario_partida, horario_chegada, previsao_partida, previsao_chegada, status) VALUES
 ('LATAM Airlines', 'GRU', 'SDU', 'Airbus A320', 'T1', 'A12', '2025-08-10 06:00:00', '2025-08-10 07:10:00', '2025-08-10 06:05:00', '2025-08-10 07:15:00', 'PROGRAMADO'),
 ('Gol', 'SDU', 'BSB', 'Boeing 737-800', 'T2', 'B03', '2025-08-10 08:30:00', '2025-08-10 10:00:00', '2025-08-10 08:45:00', '2025-08-10 10:15:00', 'ATRASADO'), 
 ('Azul', 'BSB', 'CNF', 'Embraer E195', 'T1', 'C07', '2025-08-10 11:00:00', '2025-08-10 12:15:00', '2025-08-10 11:00:00', '2025-08-10 12:15:00', 'EMBARCANDO'),
-('LATAM Airlines', 'GRU', 'JFK', 'Boeing 777', 'T3', 'D22', '2025-08-10 14:00:00', '2025-08-11 03:00:00', '2025-08-10 14:30:00', '2025-08-11 03:30:00', 'PROGRAMADO'),
-('Gol', 'CNF', 'GRU', 'Boeing 737-800', 'T2', 'A05', '2025-08-10 16:00:00', '2025-08-10 17:30:00', '2025-08-10 16:00:00', '2025-08-10 17:30:00', 'PROGRAMADO'),
-('Azul', 'GRU', 'LHR', 'Airbus A330', 'T3', 'E11', '2025-08-10 22:00:00', '2025-08-11 14:00:00', '2025-08-10 22:00:00', '2025-08-11 14:00:00', 'PROGRAMADO'),
-('LATAM Airlines', 'SDU', 'CDG', 'Boeing 787', 'T1', 'F01', '2025-08-11 01:00:00', '2025-08-11 18:30:00', '2025-08-11 01:00:00', '2025-08-11 18:30:00', 'PROGRAMADO'),
-('Gol', 'BSB', 'GRU', 'Airbus A320', 'T1', 'A09', '2025-08-11 07:00:00', '2025-08-11 09:00:00', '2025-08-11 07:10:00', '2025-08-11 09:10:00', 'PROGRAMADO');
+('LATAM Airlines', 'VCP', 'JFK', 'Boeing 777', 'T3', 'D22', '2025-08-10 14:00:00', '2025-08-11 03:00:00', '2025-08-10 14:30:00', '2025-08-11 03:30:00', 'CONCLUIDO'),
+('Gol', 'CNF', 'CGH', 'Boeing 737-800', 'T2', 'A05', '2025-08-10 16:00:00', '2025-08-10 17:30:00', '2025-08-10 16:00:00', '2025-08-10 17:30:00', 'PROGRAMADO'),
+('Azul', 'RTE', 'LHR', 'Airbus A330', 'T3', 'E11', '2025-08-10 22:00:00', '2025-08-11 14:00:00', '2025-08-10 22:00:00', '2025-08-11 14:00:00', 'CONCLUIDO'),
+('Avianca', 'SDU', 'CDG', 'Boeing 787', 'T1', 'F01', '2025-08-11 01:00:00', '2025-08-11 18:30:00', '2025-08-11 01:00:00', '2025-08-11 18:30:00', 'CONCLUIDO'),
+('Gol', 'BSB', 'GRU', 'Airbus A320', 'T1', 'A09', '2025-08-11 07:00:00', '2025-08-11 09:00:00', '2025-08-11 07:10:00', '2025-08-11 09:10:00', 'CANCELADO'),
+('American Airlines', 'REC', 'MIA', 'Boeing 787', 'T3', 'G11', '2025-08-12 08:00:00', '2025-08-12 16:30:00', '2025-08-12 08:20:00', '2025-08-12 16:50:00', 'ATRASADO'),
+('British Airways', 'LHR', 'CGH', 'Airbus A350', 'T5', 'B22', '2025-08-12 09:15:00', '2025-08-12 19:45:00', '2025-08-12 09:15:00', '2025-08-12 19:45:00', 'CONCLUIDO'),
+('Emirates', 'DXB', 'GRU', 'Airbus A380', 'T4', 'E01', '2025-08-12 22:00:00', '2025-08-13 08:30:00', '2025-08-12 22:30:00', '2025-08-13 09:00:00', 'ATRASADO'),
+('Air France', 'CDG', 'GIG', 'Boeing 777', 'T2', 'F18', '2025-08-13 06:00:00', '2025-08-13 16:20:00', '2025-08-13 06:00:00', '2025-08-13 16:20:00', 'PROGRAMADO'),
+('Lufthansa', 'FRA', 'CGH', 'Airbus A340', 'T1', 'C14', '2025-08-13 12:00:00', '2025-08-13 22:10:00', '2025-08-13 12:10:00', '2025-08-13 22:20:00', 'EMBARCANDO'),
+('Azul', 'REC', 'SSA', 'Embraer E195', 'T2', 'A03', '2025-08-13 13:00:00', '2025-08-13 14:10:00', '2025-08-13 13:00:00', '2025-08-13 14:10:00', 'CONCLUIDO'),
+('Gol', 'CGH', 'POA', 'Boeing 737 MAX', 'T1', 'D08', '2025-08-13 15:00:00', '2025-08-13 17:00:00', '2025-08-13 15:25:00', '2025-08-13 17:25:00', 'ATRASADO'),
+('LATAM Airlines', 'SDU', 'MAD', 'Boeing 787', 'T3', 'H02', '2025-08-13 18:00:00', '2025-08-14 06:40:00', '2025-08-13 18:00:00', '2025-08-14 06:40:00', 'CONCLUIDO'),
+('Qatar Airways', 'GRU', 'DXB', 'Boeing 777', 'T3', 'J09', '2025-08-13 23:55:00', '2025-08-14 18:00:00', '2025-08-14 00:30:00', '2025-08-14 18:35:00', 'ATRASADO'),
+('Japan Airlines', 'HND', 'LHR', 'Boeing 787', 'T2', 'K01', '2025-08-14 05:00:00', '2025-08-14 17:20:00', '2025-08-14 05:00:00', '2025-08-14 17:20:00', 'PROGRAMADO'),
+('Air Canada', 'YYZ', 'JFK', 'Airbus A321', 'T1', 'M12', '2025-08-14 07:40:00', '2025-08-14 09:10:00', '2025-08-14 07:50:00', '2025-08-14 09:20:00', 'EMBARCANDO'),
+('Avianca', 'BOG', 'GRU', 'Airbus A320', 'T2', 'P04', '2025-08-14 11:00:00', '2025-08-14 18:00:00', '2025-08-14 11:00:00', '2025-08-14 18:00:00', 'CANCELADO'),
+('Azul', 'FLN', 'CWB', 'ATR 72', 'T1', 'Q02', '2025-08-14 13:20:00', '2025-08-14 14:30:00', '2025-08-14 13:35:00', '2025-08-14 14:45:00', 'ATRASADO'),
+('Gol', 'FOR', 'BSB', 'Boeing 737-800', 'T2', 'R15', '2025-08-14 16:00:00', '2025-08-14 18:30:00', '2025-08-14 16:00:00', '2025-08-14 18:30:00', 'CONCLUIDO'),
+('LATAM Airlines', 'MAO', 'RTE', 'Airbus A321', 'T3', 'S07', '2025-08-14 21:00:00', '2025-08-15 01:20:00', '2025-08-14 21:45:00', '2025-08-15 02:05:00', 'ATRASADO'),
+('Qatar Airways', 'GRU', 'FCO', 'Boeing 787-9', 'T3', 'L14', '2025-08-15 08:00:00', '2025-08-15 22:30:00', '2025-08-15 08:10:00', '2025-08-15 22:40:00', 'EMBARCANDO'),
+('Gol', 'POA', 'REC', 'Boeing 737-800', 'T2', 'C09', '2025-08-15 09:30:00', '2025-08-15 13:45:00', '2025-08-15 09:30:00', '2025-08-15 13:45:00', 'PROGRAMADO'),
+('Air France', 'CDG', 'FOR', 'Airbus A350', 'T4', 'E17', '2025-08-15 10:15:00', '2025-08-15 19:20:00', '2025-08-15 10:40:00', '2025-08-15 19:45:00', 'ATRASADO'),
+('Azul', 'SSA', 'FLN', 'Embraer E195-E2', 'T1', 'B06', '2025-08-15 12:00:00', '2025-08-15 15:10:00', '2025-08-15 12:00:00', '2025-08-15 15:10:00', 'CONCLUIDO'),
+('Emirates', 'DXB', 'GIG', 'Airbus A380', 'T5', 'F25', '2025-08-15 14:20:00', '2025-08-16 01:30:00', '2025-08-15 14:50:00', '2025-08-16 02:00:00', 'ATRASADO'),
+('Lufthansa', 'FRA', 'BSB', 'Airbus A330-300', 'T2', 'D11', '2025-08-15 17:40:00', '2025-08-16 03:50:00', '2025-08-15 17:40:00', '2025-08-16 03:50:00', 'PROGRAMADO'),
+('Avianca', 'BOG', 'MAO', 'Airbus A320neo', 'T1', 'A18', '2025-08-15 20:10:00', '2025-08-16 00:45:00', '2025-08-15 20:25:00', '2025-08-16 01:00:00', 'EMBARCANDO');
 
 -- Passageiros
 INSERT INTO passageiro (cpf, nome_completo, data_nascimento, telefone, email, endereco) VALUES
 ('12345678901', 'Ana Paula Souza',       '1990-03-15', '11988001111', 'ana.souza@email.com',    'Rua das Flores, 100, São Paulo - SP'),
-('98765432100', 'Carlos Eduardo Lima',   '1985-07-22', '21977002222', 'carlos.lima@email.com',  'Av. Atlântica, 500, Rio de Janeiro - RJ'),
+('98765432100', 'Carlos de Santana',   '1985-07-22', '21977002222', 'carlos.lima@email.com',  'Av. Atlântica, 500, Rio de Janeiro - RJ'),
 ('11122233344', 'Mariana Costa Pereira', '1995-11-08', '61966003333', 'mari.pereira@email.com', 'SQN 304, Brasília - DF'),
-('55566677788', 'Roberto Alves Neto',    '1978-01-30', '31955004444', 'roberto.neto@email.com', 'Rua Minas Gerais, 200, BH - MG'),
+('55566677788', 'Ravier Alves Neto',    '1978-01-30', '31955004444', 'roberto.neto@email.com', 'Rua Minas Gerais, 200, BH - MG'),
 ('22233344455', 'Fernanda Rocha',        '2000-06-19', '11944005555', 'fer.rocha@email.com',    'Alameda Santos, 44, São Paulo - SP'),
 ('66677788899', 'Pedro Henrique Matos',  '1992-09-05', '21933006666', 'ph.matos@email.com',     'Rua Ipanema, 88, Rio de Janeiro - RJ'),
 ('33344455566', 'Juliana Ferreira',      '1988-12-25', '61922007777', 'ju.ferreira@email.com',  'Asa Norte, Brasília - DF'),
-('77788899900', 'Lucas Andrade',         '1997-04-14', '31911008888', 'lucas.andrade@email.com','Savassi, Belo Horizonte - MG');
+('77788899900', 'Lucas Andrade',         '1997-04-14', '31911008888', 'lucas.andrade@email.com','Savassi, Belo Horizonte - MG'),
+('10101010101', 'Ricardo Mendes',      '1984-02-10', '11999990001', 'ricardo@email.com', 'São Paulo - SP'),
+('20202020202', 'Patrícia Oliveira',   '1991-08-22', '21999990002', 'patricia@email.com', 'Rio de Janeiro - RJ'),
+('30303030303', 'Bruno Takahashi',     '1996-11-30', '41999990003', 'bruno@email.com', 'Curitiba - PR'),
+('40404040404', 'Camila Nogueira',     '1989-06-12', '85999990004', 'camila@email.com', 'Fortaleza - CE'),
+('50505050505', 'Felipe Santana',      '1975-04-03', '71999990005', 'felipe@email.com', 'Salvador - BA'),
+('60606060606', 'Amanda Ribeiro',      '2001-09-15', '61999990006', 'amanda@email.com', 'Brasília - DF'),
+('70707070707', 'Thiago Moura',        '1993-01-20', '31999990007', 'thiago@email.com', 'Belo Horizonte - MG'),
+('80808080808', 'Larissa Almeida',     '1998-07-01', '11999990008', 'larissa@email.com', 'São Paulo - SP'),
+('90909090909', 'Gabriel Martins',      '1994-03-18', '11990001111', 'gabriel@email.com', 'Campinas - SP'),
+('91919191919', 'Isabela Freitas',      '1999-12-02', '21990002222', 'isabela@email.com', 'Niterói - RJ'),
+('92929292929', 'Henrique Duarte',      '1982-05-27', '31990003333', 'henrique@email.com', 'Belo Horizonte - MG'),
+('93939393939', 'Vanessa Lopes',        '1990-10-14', '61990004444', 'vanessa@email.com', 'Brasília - DF'),
+('94949494949', 'Diego Fernandes',      '1987-01-09', '71990005555', 'diego@email.com', 'Salvador - BA'),
+('95959595959', 'Aline Cardoso',        '2002-08-25', '85990006666', 'aline@email.com', 'Fortaleza - CE'),
+('96969696969', 'Matheus Cavalcante',   '1995-06-30', '41990007777', 'matheus@email.com', 'Curitiba - PR'),
+('97979797979', 'Beatriz Nakamura',     '1998-09-11', '51990008888', 'beatriz@email.com', 'Porto Alegre - RS'),
+('98989898989', 'João Guilherme Prado', '1979-11-04', '92990009999', 'joao@email.com', 'Manaus - AM'),
+('99999999999', 'Clara Monteiro',       '1997-04-21', '48990000000', 'clara@email.com', 'Florianópolis - SC');
 
 -- Passagens
 INSERT INTO passagem (cpf_passageiro, voo_id, numero_assento, classe_assento, preco, data_emissao, status_pagamento, status) VALUES
@@ -44,7 +115,35 @@ INSERT INTO passagem (cpf_passageiro, voo_id, numero_assento, classe_assento, pr
 ('22233344455', 1, '15D', 'ECONOMICA',  450.00,  '2025-07-06 08:00:00', 'PAGO',      'ATIVA'),
 ('66677788899', 5, '08A', 'ECONOMICA',  390.00,  '2025-07-07 16:00:00', 'PENDENTE',  'ATIVA'),
 ('33344455566', 6, '01C', 'EXECUTIVA',  3200.00, '2025-07-08 09:00:00', 'PAGO',      'ATIVA'),
-('77788899900', 2, '22E', 'ECONOMICA',  320.00,  '2025-07-09 11:00:00', 'CANCELADO', 'CANCELADA');
+('77788899900', 2, '22E', 'ECONOMICA',  320.00,  '2025-07-09 11:00:00', 'CANCELADO', 'CANCELADA'),
+('10101010101',  9, '14A', 'ECONOMICA', 2200.00, '2025-07-10 10:00:00', 'PAGO', 'ATIVA'),
+('20202020202', 10, '02F', 'EXECUTIVA', 7800.00, '2025-07-11 11:00:00', 'PAGO', 'ATIVA'),
+('30303030303', 11, '01A', 'PRIMEIRA', 12000.00, '2025-07-11 12:00:00', 'PAGO', 'ATIVA'),
+('40404040404', 12, '18C', 'ECONOMICA', 4300.00, '2025-07-12 08:30:00', 'PENDENTE', 'ATIVA'),
+('50505050505', 13, '07D', 'EXECUTIVA', 6400.00, '2025-07-12 14:10:00', 'PAGO', 'ATIVA'),
+('60606060606', 14, '22B', 'ECONOMICA', 380.00, '2025-07-13 09:00:00', 'PAGO', 'ATIVA'),
+('70707070707', 15, '11F', 'ECONOMICA', 550.00, '2025-07-13 16:40:00', 'PAGO', 'ATIVA'),
+('80808080808', 16, '03A', 'EXECUTIVA', 5100.00, '2025-07-14 07:50:00', 'CANCELADO', 'CANCELADA'),
+('90909090909',  17, '09A', 'ECONOMICA', 890.00,  '2025-07-15 08:00:00', 'PAGO',      'ATIVA'),
+('91919191919',  18, '01C', 'EXECUTIVA', 5400.00, '2025-07-15 09:30:00', 'PAGO',      'ATIVA'),
+('92929292929',  19, '02A', 'PRIMEIRA',  11000.00,'2025-07-15 11:15:00', 'PAGO',      'ATIVA'),
+('93939393939',  20, '17D', 'ECONOMICA', 760.00,  '2025-07-16 10:00:00', 'PENDENTE',  'ATIVA'),
+('94949494949',  21, '10F', 'ECONOMICA', 1300.00, '2025-07-16 14:40:00', 'PAGO',      'ATIVA'),
+('95959595959',  22, '05B', 'EXECUTIVA', 6800.00, '2025-07-17 07:50:00', 'PAGO',      'ATIVA'),
+('96969696969',  23, '21E', 'ECONOMICA', 420.00,  '2025-07-17 13:10:00', 'CANCELADO', 'CANCELADA'),
+('97979797979',  10, '03F', 'PRIMEIRA',  9800.00, '2025-07-18 09:20:00', 'PAGO',      'ATIVA'),
+('98989898989',  11, '14C', 'ECONOMICA', 2400.00, '2025-07-18 17:30:00', 'PAGO',      'ATIVA'),
+('99999999999',  12, '08D', 'EXECUTIVA', 6100.00, '2025-07-19 19:00:00', 'PAGO',      'ATIVA'),
+('12345678901', 13, '09C', 'EXECUTIVA', 5900.00, '2025-07-20 08:00:00', 'PAGO',      'ATIVA'),
+('98765432100', 17, '18A', 'ECONOMICA', 1200.00, '2025-07-20 09:10:00', 'PAGO',      'ATIVA'),
+('11122233344', 21, '07F', 'ECONOMICA', 980.00,  '2025-07-20 10:15:00', 'PENDENTE',  'ATIVA'),
+('55566677788', 22, '02D', 'EXECUTIVA', 7300.00, '2025-07-20 11:30:00', 'PAGO',      'ATIVA'),
+('22233344455', 18, '15B', 'ECONOMICA', 840.00,  '2025-07-20 12:45:00', 'PAGO',      'ATIVA'),
+('66677788899', 14, '20A', 'ECONOMICA', 420.00,  '2025-07-20 13:00:00', 'PENDENTE',  'ATIVA'),
+('33344455566', 10, '01F', 'PRIMEIRA',  14500.00,'2025-07-20 14:20:00', 'PAGO',      'ATIVA'),
+('77788899900', 23, '11D', 'ECONOMICA', 390.00,  '2025-07-20 15:00:00', 'CANCELADO', 'CANCELADA'),
+('10101010101', 19, '03C', 'EXECUTIVA', 8800.00, '2025-07-20 16:40:00', 'PAGO',      'ATIVA'),
+('20202020202', 20, '25A', 'ECONOMICA', 760.00,  '2025-07-20 17:50:00', 'PAGO',      'ATIVA');
 
 -- Tickets de voo
 INSERT INTO ticket_de_voo (passagem_id, status_pagamento, possui_bagagem, status_embarque) VALUES
@@ -55,11 +154,53 @@ INSERT INTO ticket_de_voo (passagem_id, status_pagamento, possui_bagagem, status
 (5, 'PAGO',      FALSE, 'AGUARDANDO'),
 (6, 'PENDENTE',  FALSE, 'AGUARDANDO'),
 (7, 'PAGO',      TRUE,  'AGUARDANDO'),
-(8, 'CANCELADO', FALSE, 'CANCELADO');
+(8, 'CANCELADO', FALSE, 'CANCELADO'),
+(9,  'PAGO',      TRUE,  'CHECK_IN'),
+(10, 'PAGO',      TRUE,  'EMBARCADO'),
+(11, 'PAGO',      TRUE,  'CHECK_IN'),
+(12, 'PENDENTE',  FALSE, 'AGUARDANDO'),
+(13, 'PAGO',      TRUE,  'EMBARCADO'),
+(14, 'PAGO',      FALSE, 'AGUARDANDO'),
+(15, 'PAGO',      TRUE,  'CHECK_IN'),
+(16, 'CANCELADO', FALSE, 'CANCELADO'),
+(17, 'PAGO',      TRUE,  'AGUARDANDO'),
+(18, 'PAGO',      TRUE,  'EMBARCADO'),
+(19, 'PAGO',      TRUE,  'CHECK_IN'),
+(20, 'PENDENTE',  FALSE, 'AGUARDANDO'),
+(21, 'PAGO',      TRUE,  'AGUARDANDO'),
+(22, 'PAGO',      TRUE,  'CHECK_IN'),
+(23, 'CANCELADO', FALSE, 'CANCELADO'),
+(24, 'PAGO',      TRUE,  'EMBARCADO'),
+(25, 'PAGO',      FALSE, 'AGUARDANDO'),
+(26, 'PAGO',      TRUE,  'CHECK_IN'),
+(27, 'PAGO',      TRUE,  'CHECK_IN'),
+(28, 'PAGO',      FALSE, 'EMBARCADO'),
+(29, 'PENDENTE',  TRUE,  'AGUARDANDO'),
+(30, 'PAGO',      TRUE,  'CHECK_IN'),
+(31, 'PAGO',      FALSE, 'EMBARCADO'),
+(32, 'PENDENTE',  TRUE,  'AGUARDANDO'),
+(33, 'PAGO',      TRUE,  'EMBARCADO'),
+(34, 'CANCELADO', FALSE, 'CANCELADO'),
+(35, 'PAGO',      TRUE,  'CHECK_IN'),
+(36, 'PAGO',      TRUE,  'AGUARDANDO');
 
 -- Bagagens (apenas tickets com possui_bagagem = TRUE)
 INSERT INTO bagagem (ticket_id, peso, status) VALUES
 (1, 23.5, 'DESPACHADA'),
 (2, 18.0, 'CHECK_IN'),
-(4, 30.2, 'CHECK_IN'),
-(7, 21.0, 'CHECK_IN');
+(4, 30.2, 'TRIAGEM'),
+(7, 21.0, 'EMBARCADA'),
+(17, 22.4, 'DESEMBARCADA'),
+(18, 18.7, 'DESPACHADA'),
+(19, 31.5, 'TRIAGEM'),
+(21, 20.0, 'ESTEIRA'),
+(22, 27.8, 'EMBARCADA'),
+(24, 15.2, 'RETIRADA'),
+(26, 24.9, 'TRIAGEM'),
+(27, 19.4, 'CHECK_IN'),
+(29, 25.8, 'EXTRAVIADA'),
+(30, 17.2, 'DESPACHADA'),
+(32, 28.6, 'RETIDA'),
+(33, 32.0, 'EMBARCADA'),
+(35, 21.7, 'DESEMBARCADA'),
+(36, 16.9, 'ESTEIRA');

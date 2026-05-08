@@ -73,7 +73,7 @@ export default function App() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 16, fontFamily: 'var(--font-display)', fontWeight: 700, letterSpacing: '0.05em', color: 'var(--text-primary)' }}>
-            ✈ AIRPORT OPS
+            ✈ GLIDER
           </span>
           <span style={{ width: 1, height: 20, background: 'var(--border)' }} />
           <nav style={{ display: 'flex', gap: 4 }}>
@@ -99,7 +99,7 @@ export default function App() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           {lastUpdate && (
             <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-              atualizado {lastUpdate.toLocaleTimeString('pt-BR')}
+              Atualizado em {lastUpdate.toLocaleTimeString('pt-BR')}
             </span>
           )}
           <Clock />
@@ -118,10 +118,12 @@ export default function App() {
           <div style={{ display: 'flex', gap: 10, marginBottom: 24, flexWrap: 'wrap' }}>
             {[
               { key: 'total',      label: 'Total',       value: voos.length,                color: 'var(--text-primary)' },
-              { key: 'EMBARCANDO', label: 'Embarcando',  value: contadores.EMBARCANDO || 0, color: 'var(--green)' },
-              { key: 'ATRASADO',   label: 'Atrasados',   value: contadores.ATRASADO   || 0, color: 'var(--amber)' },
-              { key: 'CANCELADO',  label: 'Cancelados',  value: contadores.CANCELADO  || 0, color: 'var(--red)' },
               { key: 'PROGRAMADO', label: 'Programados', value: contadores.PROGRAMADO || 0, color: 'var(--blue)' },
+              { key: 'EMBARCANDO', label: 'Embarcando',  value: contadores.EMBARCANDO || 0, color: 'var(--amber)' },
+              { key: 'ATRASADO',   label: 'Atrasados',   value: contadores.ATRASADO   || 0, color: 'var(--orange)' },
+              { key: 'CANCELADO',  label: 'Cancelados',  value: contadores.CANCELADO  || 0, color: 'var(--red)' },
+              { key: 'CONCLUIDO', label: 'Concluidos', value: contadores.CONCLUIDO || 0, color: 'var(--green)' },
+
             ].map(item => (
               <div key={item.key} style={{
                 background: 'var(--bg-card)',

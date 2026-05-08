@@ -3,8 +3,17 @@ import { StatusBadge } from './StatusBadge.jsx'
 import { usePolling } from '../hooks/usePolling.js'
 import { api } from '../api.js'
 
-const STATUS_BAGAGEM = ['CHECK_IN', 'DESPACHADA', 'EM_VOO', 'ENTREGUE', 'EXTRAVIADA']
-
+const STATUS_BAGAGEM = [
+  'CHECK_IN',
+  'DESPACHADA',
+  'TRIAGEM',
+  'EMBARCADA',
+  'DESEMBARCADA',
+  'ESTEIRA',
+  'RETIRADA',
+  'EXTRAVIADA',
+  'RETIDA'
+]
 export function BagagemCard({ ticket }) {
   const bagagemId = ticket.id
   const [editing, setEditing] = useState(false)

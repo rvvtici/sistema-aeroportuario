@@ -39,47 +39,45 @@ Pré-requisitos:
 - Maven | maven (archlinux)
 
 ## Instalação (archlinux)
-sudo pacman -S maven docker-compose docker
+```sudo pacman -S maven docker-compose docker```
 
+## Rodando o Projeto
 ### Subindo o ambiente
 Ao acessar a pasta do projeto (cd sistema-aeroportuario), rodar:
 ```bash
-docker-compose up -d # roda o docker-compose.yml
+docker-compose up -d 
 ```
 E verificar se os containers foram gerados:
 ```bash
-docker ps # verifica se os containers foram gerados
+docker ps 
 ```
 Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-2 minutos) e validar com:
 ```bash
-docker exec -it airport_cassandra cqlsh # inicializar cassandra
+docker exec -it airport_cassandra cqlsh 
 ```
-Se o comando entrar em **cqlsh**, significa que está pronto para rodar. Basta digitar EXIT para voltar ao comando.
+Se o comando entrar em **cqlsh**, significa que está pronto para rodar. Basta digitar EXIT para voltar à pasta do projeto.
 
 Finalmente, rodar o backend por:
 ```bash
-mvn spring-boot:run # rodar o backend
+mvn spring-boot:run
+```
+Para acessar o frontend, via outro terminal, acesse a pasta do projeto em:
+```
+cd frontend/airport-frontend/
+npm run dev
 ```
 A aplicação estará disponível em:
 ```bash
-http://localhost:8080 #backend
-```
-
-```
-# para acessar o backend:
-cd frontend/airport-frontend/
-npm run dev
-# acesse o frontend:
 http://localhost:5173/
 ```
-
-
 
 ## Frontend (Monitoramento)
 O projeto possui um frontend simples para simulação de telões operacionais. Ao consumir os endpoints REST do backend, temos a exibição de:
 - Status de voos
 - Portões
-- Bagagens e Tickets?
+- Bagagens e Tickets
+
+A população de dados foi efetuada a partir de uma mescla de dados reais, como os aeroportos, mas majoritariamente com dados fictícios para pessoas, voos e objetos.
 
 ## Estrutura do Projeto 
 O backend é uma aplicação Java com Spring Boot organizada em um único projeto Maven. A arquitetura é dividida por responsabilidade de banco de dados (PostgreSQL, Cassandra e Redis), com separação em camadas.

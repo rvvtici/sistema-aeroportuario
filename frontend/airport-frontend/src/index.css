@@ -13,16 +13,20 @@
   --border-accent: #30363d;
 
   --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-muted: #484f58;
+  --text-secondary: #7691b1;
+  --text-muted: #8693a5;
 
   --green: #3fb950;
   --green-bg: #0d1f12;
   --green-border: #1a4021;
 
   --amber: #d29922;
-  --amber-bg: #1f1a0d;
-  --amber-border: #3d3010;
+  --amber-bg: #524117;
+  --amber-border: #926d11;
+
+  --orange: #ff943d;
+  --orange-bg: #2a1708;
+  --orange-border: #5a3210;
 
   --red: #f85149;
   --red-bg: #1f0d0d;
