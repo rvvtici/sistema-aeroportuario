@@ -202,7 +202,7 @@ export default function App() {
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                      {['#', 'Companhia', 'Rota / Aeronave', 'Horários', 'Terminal', 'Portão', 'Status'].map(h => (
+                      {['ID', 'Companhia', 'Rota / Aeronave', 'Horários', 'Terminal', 'Portão', 'Status'].map(h => (
                         <th key={h} style={{
                           padding: '10px 16px',
                           textAlign: 'left',

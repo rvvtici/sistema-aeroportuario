@@ -9,7 +9,11 @@ export function usePolling(fetchFn, intervalMs = 5000) {
   const fetch = useCallback(async () => {
     try {
       const result = await fetchFn()
-      setData(result)
+
+      if (result !== null && result !== undefined) {
+        setData(result)
+      }
+
       setError(null)
       setLastUpdate(new Date())
     } catch (err) {

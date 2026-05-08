@@ -1,6 +1,8 @@
 package com.airport.postgres.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(
@@ -28,6 +30,18 @@ public class TicketVoo {
     // Valores: AGUARDANDO | EMBARCADO | CANCELADO
     @Column(name = "status_embarque", nullable = false, length = 20)
     private String statusEmbarque = "AGUARDANDO";
+    
+    @JsonManagedReference
+    @OneToMany(mappedBy = "ticket")
+    private List<Bagagem> bagagens;
+
+    public List<Bagagem> getBagagens() {
+        return bagagens;
+    }
+
+    public void setBagagens(List<Bagagem> bagagens) {
+        this.bagagens = bagagens;
+    }
 
     public Long getId() {
         return id;

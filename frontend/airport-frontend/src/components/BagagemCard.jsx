@@ -15,15 +15,19 @@ const STATUS_BAGAGEM = [
   'RETIDA'
 ]
 export function BagagemCard({ ticket }) {
-  const bagagemId = ticket.id
+  const bagagem = ticket.bagagens?.[0]
+  const bagagemId = bagagem?.id  
   const [editing, setEditing] = useState(false)
   const [tempStatus, setTempStatus] = useState('')
   const [saving, setSaving] = useState(false)
 
-  const fetchStatus = useCallback(() => api.bagagens.status(bagagemId), [bagagemId])
+  const fetchStatus = useCallback(() => {
+    if (!bagagemId) return null
+    return api.bagagens.status(bagagemId)
+  }, [bagagemId])
   const { data: statusData, refetch } = usePolling(fetchStatus, 6000)
 
-  const statusAtual = statusData?.status || '—'
+  const statusAtual = statusData?.status ||  bagagem?.status ||  '—'
 
   async function salvar() {
     setSaving(true)
@@ -92,7 +96,7 @@ export function BagagemCard({ ticket }) {
         )}
 
         <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-          assento {ticket.passagem?.numeroAssento || '—'}
+          Assento {ticket.passagem?.numeroAssento || '—'}
         </span>
       </div>
     </div>

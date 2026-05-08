@@ -55,9 +55,17 @@ Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-
 ```bash
 docker exec -it airport_cassandra cqlsh 
 ```
-Se o comando entrar em **cqlsh**, significa que está pronto para rodar. Basta digitar EXIT para voltar à pasta do projeto.
+Se o comando entrar em **cqlsh**, significa que está pronto para rodar. Se for a primeira vez que o projeto estiver subindo no docker, será preciso criar a estrutura abaixo no Cassandra:
+```bash
+CREATE KEYSPACE airport_logs
+WITH replication = {
+  'class': 'SimpleStrategy',
+  'replication_factor': 1
+};
+```
+Ao apertar ENTER,  digitar EXIT para deixar **cqlsh** e voltar à pasta do projeto.
 
-Finalmente, rodar o backend por:
+Finalmente, podemos rodar o backend por:
 ```bash
 mvn spring-boot:run
 ```
