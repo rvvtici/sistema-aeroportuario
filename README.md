@@ -31,71 +31,49 @@ Construir uma arquitetura escalável que:
 - Cassandra
 - Redis
 - Docker
-- Dbeaver (opcional, para visualização dos bancos)
 
-## Como Executar o Projeto usando o Windows
+## Como Executar o Projeto
 Pré-requisitos:
-- Docker Desktop
+- Docker Desktop (Windows) | docker-compose & docker (archlinux)
 - Java 17
-- Maven
+- Maven | maven (archlinux)
+
+## Instalação (archlinux)
+sudo pacman -S maven docker-compose docker
 
 ### Subindo o ambiente
-Ao acessar a pasta do projeto, rodar:
+Ao acessar a pasta do projeto (cd sistema-aeroportuario), rodar:
 ```bash
-docker-compose up -d
+docker-compose up -d # roda o docker-compose.yml
 ```
 E verificar se os containers foram gerados:
 ```bash
-docker ps
+docker ps # verifica se os containers foram gerados
 ```
 Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-2 minutos) e validar com:
 ```bash
-docker exec -it airport_cassandra cqlsh
+docker exec -it airport_cassandra cqlsh # inicializar cassandra
 ```
 Se o comando entrar em **cqlsh**, significa que está pronto para rodar. Basta digitar EXIT para voltar ao comando.
 
 Finalmente, rodar o backend por:
 ```bash
-mvn spring-boot:run
+mvn spring-boot:run # rodar o backend
 ```
 A aplicação estará disponível em:
 ```bash
-http://localhost:8080
+http://localhost:8080 #backend
 ```
-## Funcionamento (em Arch Linux)
+
 ```
-sudo pacman -S docker dbeaver # instalação o docker & dbveader
-sudo systemctl start docker.service # inicialização do docker
-sudoo systemctl enable docker.service # permissão ao docker
-sudo usermod -aG docker $USER # para que não seja mais necessário digitar sudo toda vez
-reboot # reinicialização para que o comando acima seja aplicado
-
-# PostgreSQL
-docker run --name airport_postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -p 5433:5432 -d postgres
-
-# Cassandra
-docker run --name airport_cassandra -p 9042:9042 -d cassandra
-
-# Redis
-docker run --name airport_redis -p 6379:6379 -d redis redis-server
-
-docker ps -a # verifique se os três databases estão rodando
-
-# no DBeaver:
-# conecte os databases
-# selecione o postgresql/cassandra/redis
-# configure como host: localhost & port: 5433/9042/6379; username & senha do postgresql = postgres
-# teste a conexão
-# vá em postgresql/cassandra/redis e em show all databases para visualizá-los no dbeaver
-
-docker ps -a
-
-#comandos úteis
-docker stop nome-cassandra nome-redis nome-postgres     # parar
-docker start nome-cassandra nome-redis nome-postgres    # iniciar novamente
-docker rm nome-cassandra nome-redis nome-postgres       # remover container
-docker ps -a                                            # listar todos (rodando ou não)
+# para acessar o backend:
+cd frontend/airport-frontend/
+npm run dev
+# acesse o frontend:
+http://localhost:5173/
 ```
+
+
 
 ## Frontend (Monitoramento)
 O projeto possui um frontend simples para simulação de telões operacionais. Ao consumir os endpoints REST do backend, temos a exibição de:
