@@ -1,13 +1,11 @@
 services:
-
-  # ── PostgreSQL ───────────────────────────────────────────────
   postgres:
     image: postgres:15
     container_name: airport_postgres
     environment:
       POSTGRES_DB: airport
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres      
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5433:5432"
     volumes:
@@ -18,7 +16,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ── Cassandra ────────────────────────────────────────────────
   cassandra:
     image: cassandra:4.1
     container_name: airport_cassandra
@@ -29,15 +26,29 @@ services:
       - CASSANDRA_DC=datacenter1
     volumes:
       - cassandra_data:/var/lib/cassandra
-      - ./cassandra-init.cql:/docker-entrypoint-initdb.d/init.cql
     healthcheck:
       test: ["CMD-SHELL", "cqlsh -e 'describe cluster'"]
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 60s   # Cassandra demora mais para iniciar
+      start_period: 60s
 
-  # ── Redis ────────────────────────────────────────────────────
+  cassandra-init:
+      image: cassandra:4.1
+    container_name: airport_cassandra_init
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    restart: "no"
+    entrypoint: >
+      cqlsh airport_cassandra -e "
+        CREATE KEYSPACE IF NOT EXISTS airport_logs
+        WITH replication = {
+          'class': 'SimpleStrategy',
+          'replication_factor': 1
+        };
+      "
+
   redis:
     image: redis:7
     container_name: airport_redis
@@ -51,8 +62,7 @@ services:
       timeout: 5s
       retries: 5
 
-# ── Volumes persistentes ─────────────────────────────────────
 volumes:
   postgres_data:
   cassandra_data:
-  redis_data:
+
