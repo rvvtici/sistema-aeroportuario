@@ -37,66 +37,58 @@ const STATUS_MAP = {
   },
 
   CHECK_IN: {
-    label: 'Check-in',
-    color: 'var(--blue)',
-    bg: 'var(--blue-bg)',
-    border: 'var(--blue-border)',
+  label: 'Check-in',
+  color: 'var(--blue)',
+  bg: 'var(--blue-bg)',
+  border: 'var(--blue-border)',
   },
-
   DESPACHADA: {
     label: 'Despachada',
-    color: 'var(--purple)',
-    bg: 'var(--purple-bg)',
-    border: 'var(--purple-border)',
+    color: 'var(--cyan)',
+    bg: 'var(--cyan-bg)',
+    border: 'var(--cyan-border)',
   },
-
   TRIAGEM: {
     label: 'Triagem',
     color: 'var(--amber)',
     bg: 'var(--amber-bg)',
     border: 'var(--amber-border)',
   },
-
   EMBARCADA: {
     label: 'Embarcada',
-    color: 'var(--cyan)',
-    bg: 'var(--cyan-bg)',
-    border: 'var(--cyan-border)',
+    color: 'var(--purple)',
+    bg: 'var(--purple-bg)',
+    border: 'var(--purple-border)',
   },
-
   DESEMBARCADA: {
     label: 'Desembarcada',
-    color: 'var(--green)',
-    bg: 'var(--green-bg)',
-    border: 'var(--green-border)',
+    color: 'var(--teal)',
+    bg: 'var(--teal-bg)',
+    border: 'var(--teal-border)',
   },
-
   ESTEIRA: {
     label: 'Na esteira',
     color: 'var(--orange)',
     bg: 'var(--orange-bg)',
     border: 'var(--orange-border)',
   },
-
   RETIRADA: {
     label: 'Retirada',
     color: 'var(--green)',
     bg: 'var(--green-bg)',
     border: 'var(--green-border)',
   },
-
   EXTRAVIADA: {
     label: 'Extraviada',
     color: 'var(--red)',
     bg: 'var(--red-bg)',
     border: 'var(--red-border)',
   },
-
   RETIDA: {
     label: 'Retida',
-    color: 'var(--orange)',
-    bg: 'var(--orange-bg)',
-    border: 'var(--orange-border)',
+    color: 'var(--pink)',
+    bg: 'var(--pink-bg)',
+    border: 'var(--pink-border)',
   },
 }
 
