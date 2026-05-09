@@ -3,6 +3,8 @@ import { api } from './api.js'
 import { usePolling } from './hooks/usePolling.js'
 import { VooRow } from './components/VooRow.jsx'
 import { BagagemCard } from './components/BagagemCard.jsx'
+import { useAuth } from './context/AuthContext'
+import { ProtectedRoute } from './components/ProtectedRoute.jsx'
 
 const STATUS_FILTROS = ['TODOS', 'PROGRAMADO', 'EMBARCANDO', 'ATRASADO', 'CANCELADO', 'CONCLUIDO']
 
@@ -20,6 +22,7 @@ function Clock() {
 }
 
 export default function App() {
+  const { user, logout } = useAuth()
   const [tab, setTab] = useState('voos')
   const [filtroStatus, setFiltroStatus] = useState('TODOS')
   const [busca, setBusca] = useState('')
@@ -57,7 +60,7 @@ export default function App() {
   }, [voos])
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
+    <ProtectedRoute>  <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
       {/* Header */}
       <header style={{
         borderBottom: '1px solid var(--border)',
@@ -275,5 +278,6 @@ export default function App() {
         )}
       </main>
     </div>
+  </ProtectedRoute>
   )
 }
