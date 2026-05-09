@@ -32,13 +32,12 @@ Construir uma arquitetura escalável que:
 - Redis
 - Docker
 
-## Como Executar o Projeto
-Pré-requisitos:
-- Docker Desktop (Windows) | docker-compose & docker (archlinux)
+## Pré-requisitos:
+- Docker Desktop (Windows) | docker-compose & docker (ArchLinux)
 - Java 17
-- Maven | maven (archlinux)
+- Maven
 
-## Instalação (archlinux)
+### Instalação no ArchLinux
 ```sudo pacman -S maven docker-compose docker```
 
 ## Rodando o Projeto
@@ -54,14 +53,6 @@ docker ps
 Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-2 minutos) e validar com:
 ```bash
 docker exec -it airport_cassandra cqlsh 
-```
-Se o comando entrar em **cqlsh**, significa que está pronto para rodar. Se for a primeira vez que o projeto estiver subindo no docker, será preciso criar a estrutura abaixo no Cassandra:
-```bash
-CREATE KEYSPACE airport_logs
-WITH replication = {
-  'class': 'SimpleStrategy',
-  'replication_factor': 1
-};
 ```
 Ao apertar ENTER,  digitar EXIT para deixar **cqlsh** e voltar à pasta do projeto.
 
