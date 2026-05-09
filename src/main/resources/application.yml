@@ -33,7 +33,12 @@ spring:
     port: 9042
     keyspace-name: airport_logs
     local-datacenter: datacenter1
-    schema-action: CREATE_IF_NOT_EXISTS   
+    schema-action: CREATE_IF_NOT_EXISTS
+    request:
+      timeout: 10s
+    connection:
+      connection-timeout: 15s
+      init-query-timeout: 15s   
 
   # ── Redis ───────────────────────────────────────────────────
   data:

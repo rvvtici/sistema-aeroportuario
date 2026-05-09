@@ -6,10 +6,12 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null) // { token, nome, role, aeroportoIata }
 
   function login(userData) {
+    window.__glider_token__ = userData.token
     setUser(userData)
   }
 
   function logout() {
+    window.__glider_token__ = null
     setUser(null)
   }
 

@@ -24,15 +24,21 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
+        System.out.println("LOGIN RECEBIDO: " + request.getLogin());
+        System.out.println("SENHA RECEBIDA: " + request.getSenha());
+        
         Usuario usuario = usuarioRepository.findByLogin(request.getLogin())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        System.out.println("HASH NO BANCO: " + usuario.getSenhaHash());
+        System.out.println("MATCH: " + passwordEncoder.matches(request.getSenha(), usuario.getSenhaHash()));
 
         if (!passwordEncoder.matches(request.getSenha(), usuario.getSenhaHash())) {
             throw new RuntimeException("Senha incorreta");
         }
 
         String token = jwtUtil.gerar(usuario.getLogin(), usuario.getRole(), usuario.getAeroportoIata());
-
         return new LoginResponse(token, usuario.getNome(), usuario.getRole(), usuario.getAeroportoIata());
     }
 }
+

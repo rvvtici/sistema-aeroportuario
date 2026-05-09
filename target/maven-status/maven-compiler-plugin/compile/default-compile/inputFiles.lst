@@ -10,6 +10,7 @@ C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\cassandra\reposit
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\cassandra\repository\LogMudancaRepository.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\cassandra\service\LogService.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\config\CassandraConfig.java
+C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\config\JwtFilter.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\config\JwtUtil.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\config\PostgresConfig.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\config\RedisConfig.java

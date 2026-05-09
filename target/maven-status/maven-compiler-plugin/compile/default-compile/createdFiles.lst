@@ -29,6 +29,7 @@ com\airport\postgres\entity\TicketVoo.class
 com\airport\postgres\repository\UsuarioRepository.class
 com\airport\redis\controller\StatusBagagemController.class
 com\airport\redis\controller\RedisController.class
+com\airport\config\JwtFilter.class
 com\airport\postgres\controller\PassageiroController.class
 com\airport\postgres\repository\BagagemRepository.class
 com\airport\config\PostgresConfig.class
