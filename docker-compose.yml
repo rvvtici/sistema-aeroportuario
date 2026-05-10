@@ -34,7 +34,7 @@ services:
       start_period: 60s
 
   cassandra-init:
-      image: cassandra:4.1
+    image: cassandra:4.1
     container_name: airport_cassandra_init
     depends_on:
       cassandra:
@@ -65,4 +65,4 @@ services:
 volumes:
   postgres_data:
   cassandra_data:
-
+  redis_data:
