@@ -3,7 +3,7 @@ import { StatusBadge } from './StatusBadge.jsx'
 import { TimeDisplay } from './TimeDisplay.jsx'
 import { api } from '../api.js'
 
-export function VooRow({ voo, onUpdate }) {
+export function VooRow({ voo, onUpdate, user }) {
   const [editingStatus, setEditingStatus] = useState(false)
   const [editingPortao, setEditingPortao] = useState(false)
   const [tempStatus, setTempStatus] = useState(voo.status)
@@ -93,59 +93,70 @@ export function VooRow({ voo, onUpdate }) {
       </td>
 
       <td style={td}>
-        {editingPortao ? (
-          <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-            <input
-              value={tempPortao}
-              onChange={e => setTempPortao(e.target.value)}
-              style={inputStyle}
-              onKeyDown={e => e.key === 'Enter' && salvarPortao()}
-              autoFocus
-            />
-            <button onClick={salvarPortao} disabled={saving} style={btnSave}>✓</button>
-            <button onClick={() => setEditingPortao(false)} style={btnCancel}>✕</button>
-          </div>
+        {user?.role !== 'ATENDENTE' ? (
+          editingPortao ? (
+            <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+              <input
+                value={tempPortao}
+                onChange={e => setTempPortao(e.target.value)}
+                style={inputStyle}
+                onKeyDown={e => e.key === 'Enter' && salvarPortao()}
+                autoFocus
+              />
+              <button onClick={salvarPortao} disabled={saving} style={btnSave}>✓</button>
+              <button onClick={() => setEditingPortao(false)} style={btnCancel}>✕</button>
+            </div>
+          ) : (
+            <div
+              onClick={() => setEditingPortao(true)}
+              title="Clique para editar"
+              style={{ display: 'flex', flexDirection: 'column', gap: 2, cursor: 'pointer' }}
+            >
+              <span style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Portão</span>
+              <span style={{ fontWeight: 500, color: voo.portao ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                {voo.portao || '—'}
+                <span style={{ fontSize: 10, color: 'var(--text-muted)', marginLeft: 4 }}>✎</span>
+              </span>
+            </div>
+          )
         ) : (
-          <div
-            onClick={() => setEditingPortao(true)}
-            title="Clique para editar"
-            style={{ display: 'flex', flexDirection: 'column', gap: 2, cursor: 'pointer' }}
-          >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <span style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Portão</span>
-            <span style={{ fontWeight: 500, color: voo.portao ? 'var(--text-primary)' : 'var(--text-muted)' }}>
-              {voo.portao || '—'}
-              <span style={{ fontSize: 10, color: 'var(--text-muted)', marginLeft: 4 }}>✎</span>
-            </span>
+            <span style={{ fontWeight: 500 }}>{voo.portao || '—'}</span>
           </div>
         )}
       </td>
 
       <td style={td}>
-        {editingStatus ? (
-          <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-            <select
-              value={tempStatus}
-              onChange={e => setTempStatus(e.target.value)}
-              style={selectStyle}
-            >
-              {statusOptions.map(s => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            <button onClick={salvarStatus} disabled={saving} style={btnSave}>✓</button>
-            <button onClick={() => setEditingStatus(false)} style={btnCancel}>✕</button>
-          </div>
+        {user?.role !== 'ATENDENTE' ? (
+          editingStatus ? (
+            <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+              <select
+                value={tempStatus}
+                onChange={e => setTempStatus(e.target.value)}
+                style={selectStyle}
+              >
+                {statusOptions.map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+              <button onClick={salvarStatus} disabled={saving} style={btnSave}>✓</button>
+              <button onClick={() => setEditingStatus(false)} style={btnCancel}>✕</button>
+            </div>
+          ) : (
+            <div onClick={() => setEditingStatus(true)} style={{ cursor: 'pointer' }} title="Clique para editar">
+              <StatusBadge status={voo.status} />
+              <span style={{ fontSize: 10, color: 'var(--text-muted)', marginLeft: 4 }}>✎</span>
+            </div>
+          )
         ) : (
-          <div onClick={() => setEditingStatus(true)} style={{ cursor: 'pointer' }} title="Clique para editar">
-            <StatusBadge status={voo.status} />
-            <span style={{ fontSize: 10, color: 'var(--text-muted)', marginLeft: 4 }}>✎</span>
-          </div>
+          <StatusBadge status={voo.status} />
         )}
       </td>
     </tr>
   )
 }
-
+     
 const td = {
   padding: '12px 16px',
   verticalAlign: 'middle',
@@ -193,3 +204,4 @@ const btnCancel = {
   padding: '3px 7px',
   fontSize: 12,
 }
+

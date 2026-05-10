@@ -26,17 +26,41 @@ export default function App() {
   const [tab, setTab] = useState('voos')
   const [filtroStatus, setFiltroStatus] = useState('TODOS')
   const [busca, setBusca] = useState('')
+  const [buscaBagagem, setBuscaBagagem] = useState('')
 
   const fetchVoos = useCallback(() => api.voos.listar(), [])
   const fetchTickets = useCallback(() => api.tickets.listar(), [])
 
   const { data: voos, loading: loadingVoos, error: errorVoos, lastUpdate, refetch: refetchVoos } = usePolling(fetchVoos, 5000)
-  const { data: tickets, loading: loadingTickets, error: errorTickets } = usePolling(fetchTickets, 8000)
+  const { data: tickets, loading: loadingTickets, error: errorTickets, refetch: refetchTickets } = usePolling(fetchTickets, 8000)
 
   const ticketsComBagagem = useMemo(() => {
     if (!tickets) return []
-    return tickets.filter(t => t.possuiBagagem && t.statusEmbarque !== 'CANCELADO')
+    return tickets.filter(t => t.possuiBagagem && t.statusEmbarque !== 'CANCELADO' && t.bagagens?.length > 0)
   }, [tickets])
+
+  const ticketsFiltrados = useMemo(() => {
+    if (!buscaBagagem) return ticketsComBagagem
+    const q = buscaBagagem.toLowerCase()
+    return ticketsComBagagem.filter(t => {
+      const bagagem = t.bagagens?.[0]
+      const passageiro = t.passagem?.passageiro
+      const voo = t.passagem?.voo
+      const bagagemCodigo = bagagem?.id ? `BAG${String(bagagem.id).padStart(4, '0')}` : ''
+      const vooCodigo = voo?.id && voo?.companhiaAerea
+        ? voo.companhiaAerea.replace(/\s+/g, '').replace(/[^a-zA-Z]/g, '').substring(0, 2).toUpperCase() + String(voo.id).padStart(4, '0')
+        : ''
+      return (
+        bagagemCodigo.toLowerCase().includes(q) ||
+        vooCodigo.toLowerCase().includes(q) ||
+        String(bagagem?.peso).includes(q) ||
+        passageiro?.nomeCompleto?.toLowerCase().includes(q) ||
+        t.passagem?.numeroAssento?.toLowerCase().includes(q) ||
+        voo?.origem?.iata?.toLowerCase().includes(q) ||
+        voo?.destino?.iata?.toLowerCase().includes(q)
+      )     
+    })
+  }, [ticketsComBagagem, buscaBagagem])
 
   const voosFiltrados = useMemo(() => {
     if (!voos) return []
@@ -105,6 +129,52 @@ export default function App() {
               Atualizado em {lastUpdate.toLocaleTimeString('pt-BR')}
             </span>
           )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{
+              fontSize: 11,
+              color: 'var(--text-muted)',
+              fontFamily: 'var(--font-mono)',
+            }}>
+            </span>
+            <span style={{
+              fontSize: 10,
+              fontFamily: 'var(--font-mono)',
+              color: user?.role === 'ADMIN' ? 'var(--amber)' : user?.role === 'ATENDENTE' ? 'var(--green)' : 'var(--blue)',
+              background: user?.role === 'ADMIN' ? 'var(--amber-bg)' : user?.role === 'ATENDENTE' ? 'var(--green-bg)' : 'var(--blue-bg)',
+              border: `1px solid ${user?.role === 'ADMIN' ? 'var(--amber-border)' : user?.role === 'ATENDENTE' ? 'var(--green-border)' : 'var(--blue-border)'}`,
+              borderRadius: 4,
+              padding: '2px 6px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+            }}>
+              {user?.role}
+            </span>
+            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+              {user?.aeroportoIata}
+            </span>
+            <button onClick={logout} style={{
+              background: 'transparent',
+              border: '1px solid var(--border)',
+              borderRadius: 5,
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              padding: '3px 10px',
+              letterSpacing: '0.04em',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = 'var(--red-border)'
+              e.currentTarget.style.color = 'var(--red)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'var(--border)'
+              e.currentTarget.style.color = 'var(--text-muted)'
+            }}
+            >
+              ⏻
+            </button>
+          </div>
           <Clock />
           <div style={{
             width: 8, height: 8, borderRadius: '50%',
@@ -231,7 +301,7 @@ export default function App() {
                       </tr>
                     ) : (
                       voosFiltrados.map(voo => (
-                        <VooRow key={voo.id} voo={voo} onUpdate={refetchVoos} />
+                        <VooRow key={voo.id} voo={voo} onUpdate={refetchVoos} user={user}/>
                       ))
                     )}
                   </tbody>
@@ -244,10 +314,26 @@ export default function App() {
         {/* Bagagens tab */}
         {tab === 'bagagens' && (
           <>
-            <div style={{ marginBottom: 16 }}>
+            <div style={{ display: 'flex', gap: 25, marginBottom: 16, alignItems: 'center', flexWrap: 'wrap' }}>
               <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                {ticketsComBagagem.length} bagagens ativas
+                {ticketsFiltrados.length} bagagens ativas
               </span>
+              <input
+                placeholder="Buscar por id, peso, passageiro, assento, rota..."
+                value={buscaBagagem}
+                onChange={e => setBuscaBagagem(e.target.value)}
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-accent)',
+                  borderRadius: 9,
+                  color: 'var(--text-primary)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 12,
+                  padding: '6px 12px',
+                  outline: 'none',
+                  width: 350,
+                }}
+              />
             </div>
 
             {loadingTickets ? (
@@ -264,13 +350,13 @@ export default function App() {
                 gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                 gap: 10,
               }}>
-                {ticketsComBagagem.length === 0 ? (
+                {ticketsFiltrados.length === 0 ? (
                   <div style={{ color: 'var(--text-muted)', padding: 40 }}>
                     Nenhuma bagagem registrada.
                   </div>
                 ) : (
-                  ticketsComBagagem.map(ticket => (
-                    <BagagemCard key={ticket.id} ticket={ticket} />
+                  ticketsFiltrados.map(ticket => (
+                    <BagagemCard key={ticket.id} ticket={ticket} user={user} onDelete={refetchTickets}/>
                   ))
                 )}
               </div>

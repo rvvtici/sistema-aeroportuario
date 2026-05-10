@@ -50,19 +50,12 @@ public class StatusVooService {
         voo.setStatus(novoStatus);
         vooRepository.save(voo);
 
-        System.out.println(">>> TENTANDO GRAVAR LOG: voo=" + vooId + " de=" + statusAnterior + " para=" + novoStatus);
-        try {
-            logService.registrarMudanca(
-                String.valueOf(vooId),
-                statusAnterior,
-                novoStatus,
-                "mudança de status do voo"
-            );
-            System.out.println(">>> LOG GRAVADO COM SUCESSO");
-        } catch (Exception e) {
-            System.out.println(">>> ERRO AO GRAVAR LOG: " + e.getMessage());
-            e.printStackTrace();
-        }
+        logService.registrarMudanca(
+            String.valueOf(vooId),
+            statusAnterior,
+            novoStatus,
+            "mudança de status do voo"
+        );
     }
 
     @Transactional

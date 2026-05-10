@@ -24,6 +24,15 @@ async function patch(path, params = {}) {
   return res.json().catch(() => null)
 }
 
+async function del(path) {
+  const res = await fetch(`${BASE}${path}`, {
+    method: 'DELETE',
+    headers: getToken() ? { Authorization: `Bearer ${getToken()}` } : {}
+  })
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return null
+}
+
 export const api = {
   voos: {
     listar: () => get('/voos'),
@@ -35,6 +44,7 @@ export const api = {
   bagagens: {
     status: (id) => get(`/status/bagagens/${id}`),
     atualizarStatus: (id, valor) => patch(`/status/bagagens/${id}/status`, { valor }),
+    deletar: (id) => del(`/bagagens/${id}`),
   },
   tickets: {
     listar: () => get('/tickets'),

@@ -4,15 +4,8 @@ import { usePolling } from '../hooks/usePolling.js'
 import { api } from '../api.js'
 
 const STATUS_BAGAGEM = [
-  'CHECK_IN',
-  'DESPACHADA',
-  'TRIAGEM',
-  'EMBARCADA',
-  'DESEMBARCADA',
-  'ESTEIRA',
-  'RETIRADA',
-  'EXTRAVIADA',
-  'RETIDA'
+  'CHECK_IN', 'DESPACHADA', 'TRIAGEM', 'EMBARCADA',
+  'DESEMBARCADA', 'ESTEIRA', 'RETIRADA', 'EXTRAVIADA', 'RETIDA'
 ]
 
 function gerarCodigoVoo(companhia, id) {
@@ -25,12 +18,14 @@ function gerarCodigoVoo(companhia, id) {
   return `${sigla}${String(id).padStart(4, '0')}`
 }
 
-export function BagagemCard({ ticket }) {
+export function BagagemCard({ ticket, user, onDelete }) {
   const bagagem = ticket.bagagens?.[0]
-  const bagagemId = bagagem?.id  
+  const bagagemId = bagagem?.id
   const [editing, setEditing] = useState(false)
   const [tempStatus, setTempStatus] = useState('')
   const [saving, setSaving] = useState(false)
+
+  if (!bagagem || !bagagemId) return null
 
   const fetchStatus = useCallback(() => {
     if (!bagagemId) return null
@@ -38,7 +33,7 @@ export function BagagemCard({ ticket }) {
   }, [bagagemId])
   const { data: statusData, refetch } = usePolling(fetchStatus, 6000)
 
-  const statusAtual = statusData?.status ||  bagagem?.status ||  '—'
+  const statusAtual = statusData?.status || bagagem?.status || '—'
 
   async function salvar() {
     setSaving(true)
@@ -50,6 +45,16 @@ export function BagagemCard({ ticket }) {
     } finally {
       setSaving(false)
       setEditing(false)
+    }
+  }
+
+  async function deletarBagagem() {
+    if (!confirm(`Deletar bagagem BAG${String(bagagemId).padStart(4, '0')}? Esta ação não pode ser desfeita.`)) return
+    try {
+      await api.bagagens.deletar(bagagemId)
+      onDelete()
+    } catch (e) {
+      console.error(e)
     }
   }
 
@@ -66,16 +71,52 @@ export function BagagemCard({ ticket }) {
       flexDirection: 'column',
       gap: 8,
     }}>
+      {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+            <span style={{
+              fontSize: 12,
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 600,
+              color: 'var(--text-primary)',
+              letterSpacing: '0.05em',
+            }}>
+              BAG{String(bagagemId).padStart(4, '0')}
+            </span>
+            {bagagem?.peso && (
+              <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                · {bagagem.peso}kg
+              </span>
+            )}
+            {user?.role === 'ADMIN' && (
+              <button
+                onClick={deletarBagagem}
+                title="Deletar bagagem"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                  fontSize: 18,
+                  padding: 0,
+                  lineHeight: 1,
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = 'var(--red)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+              >
+                🗑
+              </button>
+            )}
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 2 }}>
+            {passageiro?.nomeCompleto || '—'}
+          </div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Ticket #{bagagemId}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 500, marginTop: 2 }}>
-            {passageiro?.nomeCompleto || '—'}
-          </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
           {voo && (
             <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
               {gerarCodigoVoo(voo.companhiaAerea, voo.id)}
@@ -87,6 +128,7 @@ export function BagagemCard({ ticket }) {
         </div>
       </div>
 
+      {/* Status e assento */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {editing ? (
           <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
@@ -103,16 +145,19 @@ export function BagagemCard({ ticket }) {
             <button onClick={() => setEditing(false)} style={btnCancel}>✕</button>
           </div>
         ) : (
-          <div
-            style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}
-            onClick={() => { setTempStatus(statusAtual); setEditing(true) }}
-            title="Clique para atualizar"
-          >
+          user?.role !== 'ATENDENTE' ? (
+            <div
+              style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}
+              onClick={() => { setTempStatus(statusAtual); setEditing(true) }}
+              title="Clique para atualizar"
+            >
+              <StatusBadge status={statusAtual} />
+              <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>✎</span>
+            </div>
+          ) : (
             <StatusBadge status={statusAtual} />
-            <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>✎</span>
-          </div>
+          )
         )}
-
         <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
           Assento {ticket.passagem?.numeroAssento || '—'}
         </span>

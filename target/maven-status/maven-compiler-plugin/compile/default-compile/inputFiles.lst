@@ -18,6 +18,7 @@ C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\config\SecurityCo
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\config\WebConfig.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\controller\AeroportoController.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\controller\AuthController.java
+C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\controller\BagagemController.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\controller\PassageiroController.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\controller\PassagemController.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\controller\TicketController.java
@@ -39,6 +40,7 @@ C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\reposito
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\repository\UsuarioRepository.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\repository\VooRepository.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\service\AuthService.java
+C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\service\BagagemService.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\service\PassageiroService.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\service\PassagemService.java
 C:\Users\caeda\sistema-aeroportuario\src\main\java\com\airport\postgres\service\TicketService.java
