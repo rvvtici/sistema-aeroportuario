@@ -1,12 +1,14 @@
 package com.airport.postgres.service;
 
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.airport.postgres.entity.Passagem;
 import com.airport.postgres.entity.TicketVoo;
 import com.airport.postgres.repository.TicketVooRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 public class TicketService {
@@ -26,6 +28,10 @@ public class TicketService {
 
     public List<TicketVoo> listarTodos() {
         return ticketRepository.findAll();
+    }
+
+    public List<TicketVoo> listarPorAeroporto(String iata) {
+        return ticketRepository.findByAeroportoIata(iata);
     }
 
     @Transactional

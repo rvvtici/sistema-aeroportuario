@@ -15,7 +15,7 @@ RESTART IDENTITY CASCADE;
 --  DML — POPULAÇÃO DE DADOS
 -- ============================================================
 
--- Aeroportos
+-- Aeroportos (25 - 10 internacionais + 15 nacionais)
 INSERT INTO aeroporto (nome, iata, cidade, uf, pais, fuso_horario) VALUES
 ('Aeroporto Internacional de Guarulhos',    'GRU', 'Guarulhos',        'SP', 'Brasil',   'America/Sao_Paulo'),
 ('Aeroporto Santos Dumont',                 'SDU', 'Rio de Janeiro',   'RJ', 'Brasil',   'America/Sao_Paulo'),
@@ -44,7 +44,7 @@ INSERT INTO aeroporto (nome, iata, cidade, uf, pais, fuso_horario) VALUES
 ('Aeroporto Internacional de Toronto Pearson',     'YYZ', 'Toronto',          NULL, 'Canadá',       'America/Toronto'),
 ('Aeroporto Internacional El Dorado',              'BOG', 'Bogotá',           NULL, 'Colômbia',    'America/Bogota');
 
--- Voos
+-- Voos (100)
 INSERT INTO voo (companhia_aerea, origem, destino, aeronave, terminal, portao, horario_partida, horario_chegada, previsao_partida, previsao_chegada, status) VALUES
 ('LATAM Airlines', 'GRU', 'SDU', 'Airbus A320', 'T1', 'A12', '2026-08-10 06:00:00', '2026-08-10 07:10:00', '2026-08-10 06:05:00', '2026-08-10 07:15:00', 'PROGRAMADO'),
 ('Gol', 'SDU', 'BSB', 'Boeing 737-800', 'T2', 'B03', '2026-08-10 08:30:00', '2026-08-10 10:00:00', '2026-08-10 08:45:00', '2026-08-10 10:15:00', 'ATRASADO'), 
@@ -60,6 +60,7 @@ INSERT INTO voo (companhia_aerea, origem, destino, aeronave, terminal, portao, h
 ('Emirates', 'DXB', 'GRU', 'Airbus A380', 'T4', 'E01', '2026-08-12 22:00:00', '2026-08-13 08:30:00', '2026-08-12 22:30:00', '2026-08-13 09:00:00', 'ATRASADO'),
 ('Gol', 'GRU', 'SSA', 'Boeing 737 MAX', 'T3', 'D06', '2026-08-11 18:00:00', '2026-08-11 21:30:00', '2026-08-11 18:10:00', '2026-08-11 21:40:00', 'PROGRAMADO'),
 ('Air France', 'CDG', 'GIG', 'Boeing 777', 'T2', 'F18', '2026-08-13 06:00:00', '2026-08-13 16:20:00', '2026-08-13 06:00:00', '2026-08-13 16:20:00', 'PROGRAMADO'),
+('Avianca', 'RTE', 'FOR', 'Airbus A321neo', 'T2', 'B11', '2026-08-10 11:50:00', '2026-08-10 15:20:00', '2026-08-10 12:00:00', '2026-08-10 15:30:00', 'PROGRAMADO'),
 ('Lufthansa', 'FRA', 'CGH', 'Airbus A340', 'T1', 'C14', '2026-08-13 12:00:00', '2026-08-13 22:10:00', '2026-08-13 12:10:00', '2026-08-13 22:20:00', 'EMBARCANDO'),
 ('Azul', 'REC', 'SSA', 'Embraer E195', 'T2', 'A03', '2025-08-13 13:00:00', '2025-08-13 14:10:00', '2025-08-13 13:00:00', '2025-08-13 14:10:00', 'CONCLUIDO'),
 ('Gol', 'CGH', 'POA', 'Boeing 737 MAX', 'T1', 'D08', '2026-08-13 15:00:00', '2026-08-13 17:00:00', '2026-08-13 15:25:00', '2026-08-13 17:25:00', 'ATRASADO'),
@@ -104,7 +105,9 @@ INSERT INTO voo (companhia_aerea, origem, destino, aeronave, terminal, portao, h
 ('Qatar Airways', 'BSB', 'DXB', 'Airbus A350-900', 'T2', 'B11', '2025-08-11 23:20:00', '2025-08-12 19:40:00', '2025-08-12 00:45:00', '2025-08-12 21:05:00', 'ATRASADO'),
 ('Japan Airlines', 'HND', 'GIG', 'Airbus A319', 'T2', 'B11', '2026-08-11 16:10:00', '2026-08-11 17:05:00', '2026-08-11 16:15:00', '2026-08-11 17:10:00', 'PROGRAMADO'),
 ('Emirates', 'GRU', 'DXB', 'Boeing 777-300ER', 'T3', 'E12', '2025-08-11 21:30:00', '2025-08-12 18:45:00', '2025-08-11 23:10:00', '2025-08-12 20:20:00', 'PROGRAMADO'),
+('Avianca', 'CWB', 'RTE', 'Boeing 737 MAX 8', 'T1', 'C04', '2026-08-10 16:15:00', '2026-08-10 17:20:00', '2026-08-10 16:10:00', '2026-08-10 17:15:00', 'CONCLUIDO'),
 ('American Airlines', 'MIA', 'CGH', 'Boeing 737-800', 'T1', 'D05', '2026-08-15 17:20:00', '2026-08-15 19:00:00', '2026-08-15 17:35:00', '2026-08-15 19:15:00', 'EMBARCANDO'),
+('Gol', 'CGH', 'RTE', 'Boeing 737-800', 'T1', 'C07', '2026-08-10 14:10:00', '2026-08-10 15:00:00', '2026-08-10 14:20:00', '2026-08-10 15:05:00', 'ATRASADO'),
 ('Azul', 'FLN', 'BSB', 'Embraer E195', 'T1', 'D05', '2026-08-16 11:40:00', '2026-08-16 13:50:00', '2026-08-16 11:40:00', '2026-08-16 13:50:00', 'PROGRAMADO'),
 ('Japan Airlines', 'SSA', 'HND', 'Boeing 787-9', 'T1', 'C14', '2025-08-11 12:40:00', '2025-08-12 15:10:00', '2025-08-11 14:00:00', '2025-08-12 16:35:00', 'ATRASADO'),
 ('Japan Airlines', 'HND', 'JFK', 'Boeing 787', 'T3', 'Q09', '2026-08-16 20:10:00', '2026-08-17 07:40:00', '2026-08-16 20:10:00', '2026-08-17 07:40:00', 'EMBARCANDO'),
@@ -127,10 +130,12 @@ INSERT INTO voo (companhia_aerea, origem, destino, aeronave, terminal, portao, h
 ('Azul', 'VCP', 'FLN', 'Airbus A320neo', 'T1', 'B14', '2026-08-11 12:20:00', '2026-08-11 13:50:00', '2026-08-11 12:25:00', '2026-08-11 13:55:00', 'ATRASADO'),
 ('Gol', 'FOR', 'CWB', 'Boeing 737 MAX', 'T2', 'R08', '2026-08-16 14:20:00', '2026-08-16 18:10:00', '2026-08-16 14:20:00', '2026-08-16 18:10:00', 'PROGRAMADO'),
 ('British Airways', 'CDG', 'GRU', 'Airbus A320', 'T5', 'M04', '2026-08-16 16:10:00', '2026-08-16 19:00:00', '2026-08-16 16:20:00', '2026-08-16 19:10:00', 'EMBARCANDO'),
+('Azul', 'RTE', 'VCP', 'Cessna Caravan', 'T2', 'B03', '2026-08-10 09:20:00', '2026-08-10 10:45:00', '2026-08-10 09:30:00', '2026-08-10 10:50:00', 'PROGRAMADO'),
 ('Gol', 'BSB', 'MAO', 'Boeing 737-800', 'T1', 'C12', '2026-08-16 18:30:00', '2026-08-16 21:45:00', '2026-08-16 18:45:00', '2026-08-16 22:00:00', 'EMBARCANDO'),
 ('British Airways', 'GRU', 'LHR', 'Airbus A350-1000', 'T3', 'F03', '2025-08-11 18:15:00', '2025-08-12 09:30:00', '2025-08-11 19:50:00', '2025-08-12 11:05:00', 'PROGRAMADO'),
 ('Air Canada', 'YYZ', 'FOR', 'ATR 72', 'T1', 'C05', '2026-08-10 19:00:00', '2026-08-10 20:10:00', '2026-08-10 19:05:00', '2026-08-10 20:15:00', 'EMBARCANDO'),
 ('Japan Airlines', 'HND', 'GRU', 'Boeing 787', 'T4', 'Q17', '2025-08-15 20:15:00', '2025-08-16 04:10:00', '2025-08-15 20:15:00', '2025-08-16 04:10:00', 'CONCLUIDO'),
+('LATAM Airlines', 'RTE', 'BSB', 'Embraer E195-E2', 'T3', 'D15', '2026-08-10 18:40:00', '2026-08-10 20:25:00', '2026-08-10 18:40:00', '2026-08-10 20:20:00', 'EMBARCANDO'),
 ('Avianca', 'REC', 'LHR', 'ATR 72', 'T1', 'C03', '2026-08-11 15:30:00', '2026-08-11 16:20:00', '2026-08-11 15:35:00', '2026-08-11 16:25:00', 'PROGRAMADO'),
 ('Azul', 'VCP', 'SSA', 'Airbus A320neo', 'T1', 'C11', '2026-08-10 20:00:00', '2026-08-10 22:20:00', '2026-08-10 20:05:00', '2026-08-10 22:25:00', 'EMBARCANDO'),
 ('Emirates', 'VCP', 'FCO', 'Embraer E195', 'T1', 'B09', '2026-08-10 18:00:00', '2026-08-10 19:20:00', '2026-08-10 18:05:00', '2026-08-10 19:25:00', 'EMBARCANDO'),
@@ -142,7 +147,7 @@ INSERT INTO voo (companhia_aerea, origem, destino, aeronave, terminal, portao, h
 ('Azul', 'CGH', 'POA', 'Embraer E195', 'T1', 'C07', '2026-08-11 09:15:00', '2026-08-11 11:00:00', '2026-08-11 09:20:00', '2026-08-11 11:05:00', 'PROGRAMADO'),
 ('Gol', 'GRU', 'CWB', 'Boeing 737', 'T3', 'D01', '2026-08-10 20:20:00', '2026-08-10 21:30:00', '2026-08-10 20:25:00', '2026-08-10 21:35:00', 'EMBARCANDO');
 
--- Passageiros
+-- Passageiros (52)
 INSERT INTO passageiro (cpf, nome_completo, data_nascimento, telefone, email, endereco) VALUES
 ('12345678901', 'Ana Paula Souza',       '1990-03-15', '11988001111', 'ana.souza@email.com',    'Rua das Flores, 100, São Paulo - SP'),
 ('98765432100', 'Carlos de Santana',   '1985-07-22', '21977002222', 'carlos.lima@email.com',  'Av. Atlântica, 500, Rio de Janeiro - RJ'),
@@ -197,7 +202,7 @@ INSERT INTO passageiro (cpf, nome_completo, data_nascimento, telefone, email, en
 ('43333333334', 'João Pedro Rezende',        '1989-07-02', '21987778889', 'joao.rezende@email.com',       'Barra da Tijuca, Rio de Janeiro - RJ'),
 ('44444444445', 'Helena Mourão',             '1997-12-21', '61988889990', 'helena.mourao@email.com',      'Taguatinga, Brasília - DF');
 
--- Passagens
+-- Passagens (76 --> 62 pagos)
 INSERT INTO passagem (cpf_passageiro, voo_id, numero_assento, classe_assento, preco, data_emissao, status_pagamento, status) VALUES
 ('12345678901', 1, '12A', 'ECONOMICA',  450.00,  '2026-07-01 10:00:00', 'PAGO',      'ATIVA'),
 ('98765432100', 2, '05C', 'EXECUTIVA',  980.00,  '2026-07-02 11:30:00', 'PAGO',      'ATIVA'),
@@ -276,7 +281,7 @@ INSERT INTO passagem (cpf_passageiro, voo_id, numero_assento, classe_assento, pr
 ('31111111112', 16, '05A', 'EXECUTIVA', 5300.00, '2026-07-21 20:00:00', 'PAGO',     'ATIVA'),
 ('34444444445', 18, '16F', 'ECONOMICA', 870.00,  '2026-07-21 20:10:00', 'PAGO',     'ATIVA');
 
--- Tickets de voo
+-- Tickets de voo (64 --> 43 possuem bagagem)
 INSERT INTO ticket_de_voo (passagem_id, status_pagamento, possui_bagagem, status_embarque) VALUES
 (1, 'PAGO',      TRUE,  'EMBARCADO'),
 (2, 'PAGO',      TRUE,  'AGUARDANDO'),
@@ -344,18 +349,21 @@ INSERT INTO ticket_de_voo (passagem_id, status_pagamento, possui_bagagem, status
 (64, 'PAGO', TRUE,  'CHECK_IN');
 
 
--- Bagagens (apenas tickets com possui_bagagem = TRUE)
+-- Bagagens - apenas tickets com possui_bagagem = TRUE (50)
 INSERT INTO bagagem (ticket_id, peso, status) VALUES
 (1, 23.5, 'DESPACHADA'),
+(2, 25.3, 'ESTEIRA'),
 (2, 18.0, 'CHECK_IN'),
 (4, 30.2, 'TRIAGEM'),
 (7, 21.0, 'EMBARCADA'),
 (9, 22.7, 'CHECK_IN'),
+(9, 15.1, 'CHECK_IN'),
 (10, 27.0, 'EMBARCADA'),
 (11, 18.3, 'DESPACHADA'),
 (13, 30.4, 'RETIDA'),
 (15, 24.6, 'ESTEIRA'),
 (17, 22.4, 'DESEMBARCADA'),
+(17, 18.7, 'DESEMBARCADA'),
 (18, 18.7, 'DESPACHADA'),
 (19, 31.5, 'TRIAGEM'),
 (21, 20.0, 'ESTEIRA'),
@@ -366,6 +374,8 @@ INSERT INTO bagagem (ticket_id, peso, status) VALUES
 (29, 25.8, 'EXTRAVIADA'),
 (30, 17.2, 'DESPACHADA'),
 (32, 28.6, 'RETIDA'),
+(32, 27.6, 'RETIDA'),
+(33, 19.9, 'EMBARCADA'),
 (33, 32.0, 'EMBARCADA'),
 (35, 21.7, 'DESEMBARCADA'),
 (36, 16.9, 'ESTEIRA'),
@@ -377,6 +387,7 @@ INSERT INTO bagagem (ticket_id, peso, status) VALUES
 (45, 16.7, 'CHECK_IN'),
 (46, 29.5, 'EMBARCADA'),
 (47, 20.6, 'TRIAGEM'),
+(47, 22.5, 'TRIAGEM'),
 (49, 23.9, 'ESTEIRA'),
 (51, 26.4, 'DESPACHADA'),
 (52, 21.2, 'EMBARCADA'),
@@ -387,5 +398,6 @@ INSERT INTO bagagem (ticket_id, peso, status) VALUES
 (59, 24.3, 'ESTEIRA'),
 (61, 29.7, 'RETIDA'),
 (62, 18.6, 'DESPACHADA'),
+(62, 13.8, 'DESPACHADA'),
 (63, 26.1, 'EMBARCADA'),
 (64, 21.4, 'CHECK_IN');

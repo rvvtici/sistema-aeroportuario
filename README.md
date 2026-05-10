@@ -25,7 +25,7 @@ Construir uma arquitetura escalável que:
 
 ## Tecnologias Utilizadas
 - Java 17
-- Spring Boot
+- Spring Boot 3.3.0
 - Maven
 - PostgreSQL
 - Cassandra
@@ -42,7 +42,7 @@ Construir uma arquitetura escalável que:
 
 ## Rodando o Projeto
 ### Subindo o ambiente
-Ao acessar a pasta do projeto (cd sistema-aeroportuario), rodar:
+Ao acessar o local da pasta do projeto, rodar:
 ```bash
 docker-compose up -d 
 ```
@@ -70,14 +70,33 @@ A aplicação estará disponível em:
 ```bash
 http://localhost:5173/
 ```
+## Interface do Usuário
+O projeto conta com uma interface web voltada para operações aeroportuárias internas, oferecendo um sistema de login para autenticação e controle de acesso conforme os diferentes tipos de usuário. 
+<img width="504" height="439" alt="image" src="https://github.com/user-attachments/assets/341716e8-847f-439e-ae5a-1d716b6e7e0d" />
+Após a autentificação, o usuário é direcionado para um painel operacional inspirado em telões aeroportuários, priorizando leitura rápida para monitoramento e atualização contínua de informações.
+O sistema é dividido em duas abas principais:
+- Voos: Página principal da aplicação. Exibe os voos associados ao aeroporto, incluindo informações operacionais e atualizações de status em tempo real.
+<img width="1365" height="590" alt="image" src="https://github.com/user-attachments/assets/3f71fa63-bd00-443f-ad7b-887b781f9114" />
+<br>
+- Bagagens: Área complementar destinada ao gerenciamento e monitoramento de bagagens, permitindo visualizar suas principais informações, como passageiro relacionado, vínculos com voos, ticket e status.
+<br>
+<img width="1365" height="506" alt="image" src="https://github.com/user-attachments/assets/62330f29-998a-4510-a75f-c888126c1326" />
+<br>
+A base de dados utilizada no projeto combina elementos reais (aeroportos, companhias aéreas, códigos IATA) com dados fictícios criados para passageiros, voos, bagagens e demais entidades do sistema.
 
-## Frontend (Monitoramento)
-O projeto possui um frontend simples para simulação de telões operacionais. Ao consumir os endpoints REST do backend, temos a exibição de:
-- Status de voos
-- Portões
-- Bagagens e Tickets
+## Usuários do Sistema
 
-A população de dados foi efetuada a partir de uma mescla de dados reais, como os aeroportos, mas majoritariamente com dados fictícios para pessoas, voos e objetos.
+O sistema possui três perfis de acesso, cada um com escopo de visualização e permissões distintas:
+
+| Perfil | Visualização | Editar status | Excluir bagagens |
+|---|---|---|---|
+| **ATENDENTE** | Só seu aeroporto | ✗ | ✗ |
+| **OPERADOR** | Só seu aeroporto | ✓ | ✗ |
+| **ADMIN** | Todos os aeroportos | ✓ | ✓ |
+
+Cada usuário é vinculado a um aeroporto específico no cadastro. Atendentes e Operadores visualizam apenas voos e bagagens cujo aeroporto de origem ou destino coincide com o seu. Administradores têm visão global do sistema.
+
+A autenticação é feita via login e senha, com tokens JWT gerados no backend e validados a cada requisição.
 
 ## Estrutura do Projeto 
 O backend é uma aplicação Java com Spring Boot organizada em um único projeto Maven. A arquitetura é dividida por responsabilidade de banco de dados (PostgreSQL, Cassandra e Redis), com separação em camadas.
@@ -134,107 +153,38 @@ sistema-aeroportuario/
 O sistema utiliza três bancos, cada um com papéis bem definidos:
 
 ### PostgreSQL - Dados Críticos
-Armazena dados estruturais e persistentes, como:
-- Passageiros
-- Aeroportos
-- Voos
-- Passagens
-- Tickets de voo
-- Bagagens
+Armazena todos os dados estruturais e persistentes do sistema, como fonte de verdade para as operações transacionais. Entre as entidades:
+- Aeroportos: Cadastro com IATA, cidade, fuso horário
+- Voos: Rotas, horários, terminal, portão e status operacional
+- Passageiros: Dados cadastrais e de contato
+- Passagens: Vínculo entre passageiro e voo, com assento e status de pagamento
+- Tickets de voo: Gerados a partir de passagens confirmadas, controlam o embarque
+- Bagagens: Associadas a tickets, com peso e status de rastreamento
+- Usuários: Autenticação e controle de acesso por perfil e aeroporto
 
 #### Modelagem de Dados (MER / DER)
-Gerado através do LucidChart.
+Modelado através do LucidChart.
 <img width="1645" height="840" alt="image" src="https://github.com/user-attachments/assets/9e7c9f1d-c449-4139-9c6b-e5c59efbebb9" />
 
 ---
 
 ### Cassandra - Logs e Auditoria
-Registra todos os eventos do sistema, como:
-- Atualizações de status
-- Mudanças de portão
-- Atualizações operacionais
+Registra todos os eventos do sistema para fins de rastreabilidade e auditoria. Cada tabela cobre um tipo específico de evento:
+
+- log_mudanca — alterações de status em voos e bagagens, com valor anterior e novo
+- log_criacao — registro de novos recursos criados no sistema (voos, bagagens)
+- log_cancelamento — exclusões de bagagens e cancelamentos de voos
+- log_confirmacao — eventos de conclusão bem-sucedida: bagagens retiradas e voos concluídos
 
 ---
 
 ### Redis - Status em Tempo Real
-Armazena dados voláteis, como:
-- Status atual do voo
-- Horários reais de partida e chegada
-- Alterações de portão
-- Atrasos
-- Situação operacional corrente
+Armazena dados voláteis que precisam de acesso rápido e são atualizados com frequência durante a operação:
+- Status atual de voos e bagagens
+- Portões de embarque
+- Sincronização automática: Ao inicializar, o backend espelha todos os dados do PostgreSQL no Redis; alterações feitas pelo sistema atualizam os dois bancos simultaneamente
 
-Esses dados podem ser sincronizados com o banco relacional quando necessário.
-
----
-
-## Entidades principais
-
-### Passageiro
-- Nome completo
-- CPF (PK)
-- Endereço
-- E-mail
-- Telefone
-- Data de nascimento
-
-### Voo
-- ID (PK)
-- Origem e destino (através do IATA)
-- Companhia aérea
-- Horários
-- Portão
-- Aeronave
-- Terminal
-- Status base do voo
----
-
-### Passagem
-Representa a **compra do direito de viajar**:
-- ID (PK)
-- Passageiro
-- Voo
-- Preço
-- Número do assento
-- Classe do assento
-- Data de emissão
-- Status de pagamento (FK)
-- Status de embarque
-
-A passagem existe mesmo que o passageiro não realize o embarque.
-
----
-
-### Ticket de Voo (Check‑in)
-Representa a **confirmação operacional para embarque**:
-- ID próprio (PK)
-- Possui bagagem (boolean)
-- Status de embarque
-
-O ticket **só pode ser criado se a passagem estiver paga**.
-
----
-
-### Bagagem
-Entidade dependente do ticket:
-- ID próprio (PK)
-- Associação com ticket
-- Peso
-- Status da bagagem
-
-Um ticket pode possuir zero ou mais bagagens.
-
----
-
-### Aeroporto
-Dados estruturais e críticos:
-- IATA (PK)
-- Nome
-- Cidade
-- UF
-- País
-- Fuso horário
-
+Os dados do Redis são sempre sincronizados com o PostgreSQL a cada alteração.
 ---
 
 ## Conceitos importantes
@@ -242,20 +192,12 @@ Dados estruturais e críticos:
 - **Passagem ≠ Ticket**
   - Passagem → compra / contrato
   - Ticket → check-in / operação
+  - A passagem existe mesmo que o passageiro não realize o embarque.
+  - O ticket **só pode ser criado se a passagem estiver paga**.
+  - Um ticket pode possuir zero ou mais bagagens.
 - **Status de pagamento ≠ Status de embarque**
   - Pagamento pertence à passagem
   - Embarque pertence ao ticket
-
----
-
-## Usuários do Sistema
-
-O sistema foi pensado para diferentes perfis internos, como:
-- Atendentes de check-in
-- Operadores de voo
-- Supervisores
-- Gestores aeroportuários
-- Sistemas automatizados
 
 ---
 ## Autoria
