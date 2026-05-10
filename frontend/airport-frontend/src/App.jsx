@@ -255,6 +255,20 @@ export default function App() {
                   </button>
                 ))}
               </div>
+            
+            {busca.trim() && (
+              <div
+                style={{
+                  color: 'var(--text-muted)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  letterSpacing: '0.05em',
+                  marginLeft: 250,
+                }}
+              > Retornou {voosFiltrados.length} {voosFiltrados.length === 1 ? 'linha' : 'linhas!'}
+              </div>
+            )}
+           
             </div>
 
             {loadingVoos ? (

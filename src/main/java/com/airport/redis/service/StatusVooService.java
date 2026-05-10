@@ -7,8 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.airport.postgres.entity.Voo;
 import com.airport.postgres.repository.VooRepository;
 
+import jakarta.annotation.PostConstruct;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 @Service
 public class StatusVooService {
@@ -56,6 +59,20 @@ public class StatusVooService {
             novoStatus,
             "mudança de status do voo"
         );
+
+        if ("CONCLUIDO".equals(novoStatus)) {
+            logService.registrarConfirmacao(
+                String.valueOf(vooId),
+                "VOO"
+            );
+        }
+
+        if ("CANCELADO".equals(novoStatus)) {
+            logService.registrarCancelamento(
+                String.valueOf(vooId),
+                "VOO"
+            );
+        }
     }
 
     @Transactional
@@ -74,6 +91,13 @@ public class StatusVooService {
             novoPortao,
             "mudança de portão do voo"
         );
+    }
+
+    @PostConstruct
+    public void sincronizarVoosNoRedis() {
+        List<Voo> voos = vooRepository.findAll();
+        voos.forEach(v -> _espelharNoRedis(v.getId(), v.getStatus(), v.getPortao()));
+        System.out.println(">>> Redis sincronizado com " + voos.size() + " voos");
     }
 
     private void _espelharNoRedis(Long vooId, String status, String portao) {
