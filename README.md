@@ -32,13 +32,12 @@ Construir uma arquitetura escalável que:
 - Redis
 - Docker
 
-## Como Executar o Projeto
-Pré-requisitos:
-- Docker Desktop (Windows) | docker-compose & docker (archlinux)
+## Pré-requisitos:
+- Docker Desktop (Windows) | docker-compose & docker (ArchLinux)
 - Java 17
-- Maven | maven (archlinux)
+- Maven
 
-## Instalação (archlinux)
+### Instalação no ArchLinux
 ```sudo pacman -S maven docker-compose docker```
 
 ## Rodando o Projeto
@@ -55,18 +54,11 @@ Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-
 ```bash
 docker exec -it airport_cassandra cqlsh 
 ```
-Se o comando entrar em **cqlsh**, significa que está pronto para rodar. Se for a primeira vez que o projeto estiver subindo no docker, será preciso criar a estrutura abaixo no Cassandra:
-```bash
-CREATE KEYSPACE airport_logs
-WITH replication = {
-  'class': 'SimpleStrategy',
-  'replication_factor': 1
-};
-```
 Ao apertar ENTER,  digitar EXIT para deixar **cqlsh** e voltar à pasta do projeto.
 
 Finalmente, podemos rodar o backend por:
 ```bash
+cd backend
 mvn spring-boot:run
 ```
 Para acessar o frontend, via outro terminal, acesse a pasta do projeto em:
@@ -90,72 +82,51 @@ A população de dados foi efetuada a partir de uma mescla de dados reais, como 
 ## Estrutura do Projeto 
 O backend é uma aplicação Java com Spring Boot organizada em um único projeto Maven. A arquitetura é dividida por responsabilidade de banco de dados (PostgreSQL, Cassandra e Redis), com separação em camadas.
 ```bash
-airport-management/
+sistema-aeroportuario/
+├── README.md
+├── cassandra-init.cql              # Script CQL rodado pelo cassandra-init no docker-compose
 ├── docker-compose.yml              # Sobe PostgreSQL, Cassandra e Redis localmente
-├── pom.xml                         # Dependências e configuração do Maven
-└── src/
-    └── main/
-        ├── java/com/airport/
-        │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
-        │   │
-        │   ├── config/                         # Configurações da integração com os bancos
-        │   │   ├── PostgresConfig.java         
-        │   │   ├── CassandraConfig.java        
-        │   │   └── RedisConfig.java            
-        │   │
-        │   ├── postgres/                       # Banco relacional — dados transacionais críticos
-        │   │   ├── entity/                     # Entidades JPA
-        │   │   ├── repository/                 # Interfaces JpaRepository
-        │   │   ├── service/                    # Regras de negócio
-        │   │   └── controller/                 # Endpoints REST
-        │   │
-        │   ├── cassandra/                      # Banco de logs/eventos — dados massivos e contínuos
-        │   │   ├── entity/                     # Entidades @Table
-        │   │   ├── repository/                 # Interfaces
-        │   │   ├── service/                    # Lógica de registro
-        │   │   └── controller/                 # Endpoints REST 
-        │   │
-        │   └── redis/                          # Banco de status em tempo real — dados voláteis e cache
-        │       ├── service/                    # Operações com RedisTemplate
-        │       └── controller/                 # Endpoints REST
-        │
-        └── resources/
-            ├── application.yml                 # Configuração dos bancos (URLs, portas, credenciais)
-            │
-            ├── static/                         # Frontend simples (servido pelo Spring)
-            │   └── index.html                  # Telão/monitoramento
-            └── db/
-                ├── migration/                  # Scripts do Flyway (PostgreSQL)
-                │   ├── V1__create_tables.sql   # DDL — criação das tabelas do PostgreSQL (Flyway)
-                │   └── V2__seed_data.sql       # DML — população inicial dos dados (Flyway)
-                │
-                └── cassandra/                  # Scripts CQL (Cassandra)
-                    └── schema.cql              # Criação de keyspace/tabelas de log
-    frontend
-        airport-frontend
-            enlist.config.js
-            node_modules
-            package.json
-            index.html
-            package-lock.json
-            vite.config.js
-            src
-                App.css
-                App.jsx
-                api.js
-                index.css
-                main.jsx
-                assets
-                    hero.png
-                    react.svg
-                    vite.svg
-                components
-                    BagagemCard.jsx
-                    StatusBadge.jsx
-                    TimeDisplay.jsx
-                    VooRow.jsx
-                hooks
-                    usePolling.js
+│
+├── backend/                        # Aplicação Spring Boot
+│   ├── pom.xml                     # Dependências e configuração do Maven
+│   └── src/main/
+│       ├── java/com/airport/
+│       │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
+│       │   ├── config/                         # Configuração dos três bancos
+│       │   ├── cassandra/                      # Módulo de logs — dados massivos e contínuos
+│       │   │   ├── controller/
+│       │   │   ├── entity/
+│       │   │   ├── repository/
+│       │   │   └── service/
+│       │   ├── postgres/                       # Módulo relacional — dados transacionais críticos
+│       │   │   ├── controller/
+│       │   │   ├── entity/
+│       │   │   ├── repository/
+│       │   │   └── service/
+│       │   └── redis/                          # Módulo de status em tempo real — dados voláteis
+│       │       ├── controller/
+│       │       └── service/
+│       └── resources/
+│           ├── application.yml                 # Configuração dos três bancos (URLs, portas, credenciais)
+│           ├── db/
+│           │   ├── cassandra/
+│           │   │   └── schema.cql              # Criação de keyspace/tabelas (referência)
+│           │   └── migration/                  # Scripts Flyway — rodam automaticamente no boot
+│           │       ├── V1__create_tables.sql   # DDL — criação das tabelas
+│           │       └── V2__seed_data.sql       # DML — população inicial
+│           └── static/                         # Build do frontend servido pelo Spring (porta 8080)
+│
+└── frontend/                       # Código fonte do frontend React
+    └── airport-frontend/
+        ├── vite.config.js          # Proxy /api → localhost:8080
+        ├── package.json
+        └── src/
+            ├── App.jsx             # Painel principal (voos + bagagens)
+            ├── api.js              # Camada de chamadas HTTP para a API
+            ├── index.css           # Variáveis CSS e reset global
+            ├── components/         # StatusBadge, TimeDisplay, VooRow, BagagemCard
+            └── hooks/
+                └── usePolling.js   # Atualização automática a cada N segundos
 ```
 
 ## Arquitetura de Dados

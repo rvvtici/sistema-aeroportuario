@@ -26,6 +26,7 @@ spring:
     password: postgres
     locations: classpath:db/migration
     baseline-on-migrate: true
+    repair-on-migrate: true
 
   # ── Cassandra ───────────────────────────────────────────────
   cassandra:
