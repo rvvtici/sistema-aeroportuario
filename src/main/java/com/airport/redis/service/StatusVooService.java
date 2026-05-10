@@ -1,5 +1,6 @@
 package com.airport.redis.service;
 
+import com.airport.cassandra.service.LogService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,59 +15,74 @@ public class StatusVooService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final VooRepository vooRepository;
+    private final LogService logService;
 
     public StatusVooService(RedisTemplate<String, Object> redisTemplate,
-                            VooRepository vooRepository) {
+                            VooRepository vooRepository,
+                            LogService logService) {
         this.redisTemplate = redisTemplate;
         this.vooRepository = vooRepository;
+        this.logService = logService;
     }
 
     private String chave(Long vooId) {
         return "voo:" + vooId;
     }
 
-    // Leitura — Redis primeiro, fallback no Postgres
     public Map<Object, Object> buscarStatus(Long vooId) {
         Map<Object, Object> dados = redisTemplate.opsForHash().entries(chave(vooId));
-
         if (dados == null || dados.isEmpty()) {
             Voo voo = vooRepository.findById(vooId).orElse(null);
             if (voo == null) return Map.of();
-            // Popula o Redis com o que está no Postgres
             _espelharNoRedis(vooId, voo.getStatus(), voo.getPortao());
             dados = redisTemplate.opsForHash().entries(chave(vooId));
         }
-
         return dados;
     }
 
-    // Atualiza status: Redis → Postgres
     @Transactional
     public void atualizarStatus(Long vooId, String novoStatus) {
-        // 1. Redis (leitura em tempo real)
-        redisTemplate.opsForHash().put(chave(vooId), "status", novoStatus);
-
-        // 2. Postgres (persistência)
         Voo voo = vooRepository.findById(vooId)
                 .orElseThrow(() -> new RuntimeException("Voo não encontrado: " + vooId));
+        String statusAnterior = voo.getStatus();
+
+        redisTemplate.opsForHash().put(chave(vooId), "status", novoStatus);
         voo.setStatus(novoStatus);
         vooRepository.save(voo);
+
+        System.out.println(">>> TENTANDO GRAVAR LOG: voo=" + vooId + " de=" + statusAnterior + " para=" + novoStatus);
+        try {
+            logService.registrarMudanca(
+                String.valueOf(vooId),
+                statusAnterior,
+                novoStatus,
+                "mudança de status do voo"
+            );
+            System.out.println(">>> LOG GRAVADO COM SUCESSO");
+        } catch (Exception e) {
+            System.out.println(">>> ERRO AO GRAVAR LOG: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    // Atualiza portão: Redis → Postgres
     @Transactional
     public void atualizarPortao(Long vooId, String novoPortao) {
-        // 1. Redis
-        redisTemplate.opsForHash().put(chave(vooId), "portao", novoPortao);
-
-        // 2. Postgres
         Voo voo = vooRepository.findById(vooId)
                 .orElseThrow(() -> new RuntimeException("Voo não encontrado: " + vooId));
+        String portaoAnterior = voo.getPortao() != null ? voo.getPortao() : "—";
+
+        redisTemplate.opsForHash().put(chave(vooId), "portao", novoPortao);
         voo.setPortao(novoPortao);
         vooRepository.save(voo);
+
+        logService.registrarMudanca(
+            String.valueOf(vooId),
+            portaoAnterior,
+            novoPortao,
+            "mudança de portão do voo"
+        );
     }
 
-    // Uso interno — só popula o Redis sem tocar no Postgres
     private void _espelharNoRedis(Long vooId, String status, String portao) {
         Map<String, String> dados = new HashMap<>();
         dados.put("status", status != null ? status : "PROGRAMADO");

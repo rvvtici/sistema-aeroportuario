@@ -36,6 +36,12 @@ public class JwtFilter extends OncePerRequestFilter {
             if (jwtUtil.validar(token)) {
                 Claims claims = jwtUtil.extrair(token);
                 String role = claims.get("role", String.class);
+                String aeroportoIata = claims.get("aeroportoIata", String.class);
+
+                // expõe no request para o controller usar
+                request.setAttribute("role", role);
+                request.setAttribute("aeroportoIata", aeroportoIata);
+
                 UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(
                         claims.getSubject(),

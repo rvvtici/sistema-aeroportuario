@@ -38,6 +38,16 @@ export function VooRow({ voo, onUpdate }) {
     }
   }
 
+  function gerarCodigoVoo(companhia, id) {
+    if (!companhia) return `#${id}`
+    const sigla = companhia
+      .replace(/\s+/g, '')        // remove espaços
+      .replace(/[^a-zA-Z]/g, '')  // só letras
+      .substring(0, 2)
+      .toUpperCase()
+    const numero = String(id).padStart(4, '0')
+    return `${sigla}${numero}`
+  }
   const origem = voo.origem?.iata || '—'
   const destino = voo.destino?.iata || '—'
 
@@ -48,7 +58,9 @@ export function VooRow({ voo, onUpdate }) {
       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
     >
       <td style={td}>
-        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>#{voo.id}</span>
+        <span style={{ fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', letterSpacing: '0.05em' }}>
+          {gerarCodigoVoo(voo.companhiaAerea, voo.id)}
+        </span>
       </td>
 
       <td style={td}>

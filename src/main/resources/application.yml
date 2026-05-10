@@ -3,7 +3,10 @@ spring:
     name: airport-management
   datasource:
     hikari:
-      connection-timeout: 30000
+      minimum-idle: 2
+      maximum-pool-size: 10
+      connection-timeout: 3000
+      initialization-fail-timeout: 0
     url: jdbc:postgresql://localhost:5433/airport
     username: postgres
     password: postgres

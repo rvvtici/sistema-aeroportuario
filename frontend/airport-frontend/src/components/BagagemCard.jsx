@@ -14,6 +14,17 @@ const STATUS_BAGAGEM = [
   'EXTRAVIADA',
   'RETIDA'
 ]
+
+function gerarCodigoVoo(companhia, id) {
+  if (!companhia || !id) return null
+  const sigla = companhia
+    .replace(/\s+/g, '')
+    .replace(/[^a-zA-Z]/g, '')
+    .substring(0, 2)
+    .toUpperCase()
+  return `${sigla}${String(id).padStart(4, '0')}`
+}
+
 export function BagagemCard({ ticket }) {
   const bagagem = ticket.bagagens?.[0]
   const bagagemId = bagagem?.id  
@@ -64,8 +75,15 @@ export function BagagemCard({ ticket }) {
             {passageiro?.nomeCompleto || '—'}
           </div>
         </div>
-        <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
-          {voo ? `${voo.origem?.iata} → ${voo.destino?.iata}` : '—'}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
+          {voo && (
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
+              {gerarCodigoVoo(voo.companhiaAerea, voo.id)}
+            </span>
+          )}
+          <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
+            {voo ? `${voo.origem?.iata} → ${voo.destino?.iata}` : '—'}
+          </span>
         </div>
       </div>
 

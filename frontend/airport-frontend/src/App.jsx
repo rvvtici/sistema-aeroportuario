@@ -188,12 +188,13 @@ export default function App() {
             </div>
 
             {loadingVoos ? (
-              <div style={{ color: 'var(--text-muted)', padding: 40, textAlign: 'center' }}>
-                carregando voos...
+              <div style={{ color: 'var(--text-muted)', padding: 40, textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
+                <div style={{ marginBottom: 8 }}>⟳ Conectando ao servidor...</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', opacity: 0.6 }}>Isso pode levar alguns segundos!</div>
               </div>
             ) : errorVoos ? (
               <div style={{ color: 'var(--red)', padding: 40, textAlign: 'center' }}>
-                erro ao conectar com a API — {errorVoos}
+                Erro ao conectar com a API — {errorVoos}
               </div>
             ) : (
               <div style={{
@@ -205,7 +206,7 @@ export default function App() {
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                      {['ID', 'Companhia', 'Rota / Aeronave', 'Horários', 'Terminal', 'Portão', 'Status'].map(h => (
+                      {['Código de Voo', 'Companhia', 'Rota / Aeronave', 'Horários', 'Terminal', 'Portão', 'Status'].map(h => (
                         <th key={h} style={{
                           padding: '10px 16px',
                           textAlign: 'left',
@@ -225,7 +226,7 @@ export default function App() {
                     {voosFiltrados.length === 0 ? (
                       <tr>
                         <td colSpan={7} style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>
-                          nenhum voo encontrado
+                          Nenhum voo encontrado.
                         </td>
                       </tr>
                     ) : (
@@ -251,7 +252,7 @@ export default function App() {
 
             {loadingTickets ? (
               <div style={{ color: 'var(--text-muted)', padding: 40, textAlign: 'center' }}>
-                carregando bagagens...
+                Carregando bagagens...
               </div>
             ) : errorTickets ? (
               <div style={{ color: 'var(--red)', padding: 40, textAlign: 'center' }}>
@@ -265,7 +266,7 @@ export default function App() {
               }}>
                 {ticketsComBagagem.length === 0 ? (
                   <div style={{ color: 'var(--text-muted)', padding: 40 }}>
-                    nenhuma bagagem registrada
+                    Nenhuma bagagem registrada.
                   </div>
                 ) : (
                   ticketsComBagagem.map(ticket => (

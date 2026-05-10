@@ -1,23 +1,30 @@
 package com.airport.postgres.service;
 
-import com.airport.postgres.entity.Voo;
-import com.airport.postgres.repository.VooRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.airport.cassandra.service.LogService;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.airport.postgres.entity.Voo;
+import com.airport.postgres.repository.VooRepository;
 
 @Service
 public class VooService {
 
     private final VooRepository vooRepository;
+    private final LogService logService;
 
-    public VooService(VooRepository vooRepository) {
+    public VooService(VooRepository vooRepository, LogService logService) {
         this.vooRepository = vooRepository;
+        this.logService = logService;
     }
 
     public List<Voo> listarTodos() {
         return vooRepository.findAll();
+    }
+
+    public List<Voo> listarPorAeroporto(String iata) {
+        return vooRepository.findByOrigemIataOrDestinoIata(iata, iata);
     }
 
     public Voo buscarPorId(Long id) {
@@ -39,31 +46,32 @@ public class VooService {
 
     @Transactional
     public Voo criar(Voo voo) {
-        return vooRepository.save(voo);
+        Voo salvo = vooRepository.save(voo);
+        logService.registrarCriacao(String.valueOf(salvo.getId()), "VOO");
+        return salvo;
     }
 
-  
-  // VooService.atualizar() — retira status e portão daqui
     @Transactional
     public Voo atualizar(Long id, Voo dadosNovos) {
-      Voo voo = buscarPorId(id);
-      voo.setCompanhiaAerea(dadosNovos.getCompanhiaAerea());
-      voo.setOrigem(dadosNovos.getOrigem());
-      voo.setDestino(dadosNovos.getDestino());
-      voo.setAeronave(dadosNovos.getAeronave());
-      voo.setTerminal(dadosNovos.getTerminal());
-    // portao e status saem daqui — gerenciados pelo StatusVooService
-      voo.setHorarioPartida(dadosNovos.getHorarioPartida());
-      voo.setHorarioChegada(dadosNovos.getHorarioChegada());
-      voo.setPrevisaoPartida(dadosNovos.getPrevisaoPartida());
-      voo.setPrevisaoChegada(dadosNovos.getPrevisaoChegada());
-      return vooRepository.save(voo);
+        Voo voo = buscarPorId(id);
+        voo.setCompanhiaAerea(dadosNovos.getCompanhiaAerea());
+        voo.setOrigem(dadosNovos.getOrigem());
+        voo.setDestino(dadosNovos.getDestino());
+        voo.setAeronave(dadosNovos.getAeronave());
+        voo.setTerminal(dadosNovos.getTerminal());
+        voo.setHorarioPartida(dadosNovos.getHorarioPartida());
+        voo.setHorarioChegada(dadosNovos.getHorarioChegada());
+        voo.setPrevisaoPartida(dadosNovos.getPrevisaoPartida());
+        voo.setPrevisaoChegada(dadosNovos.getPrevisaoChegada());
+        Voo salvo = vooRepository.save(voo);
+        logService.registrarMudanca(String.valueOf(id), "dados anteriores", "dados atualizados", "atualização de voo");
+        return salvo;
     }
 
-    
     @Transactional
     public void deletar(Long id) {
-        buscarPorId(id); // garante que existe antes de deletar
+        buscarPorId(id);
         vooRepository.deleteById(id);
+        logService.registrarCancelamento(String.valueOf(id), "VOO");
     }
 }

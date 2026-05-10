@@ -20,4 +20,7 @@ public interface VooRepository extends JpaRepository<Voo, Long> {
 
     // Busca voos em uma janela de horário — ex: voos do dia
     List<Voo> findByHorarioPartidaBetween(LocalDateTime inicio, LocalDateTime fim);
+
+    // Busca voos onde o aeroporto é origem OU destino
+    List<Voo> findByOrigemIataOrDestinoIata(String origem, String destino);
 }

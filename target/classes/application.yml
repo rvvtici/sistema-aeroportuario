@@ -3,7 +3,10 @@ spring:
     name: airport-management
   datasource:
     hikari:
-      connection-timeout: 30000
+      minimum-idle: 2
+      maximum-pool-size: 10
+      connection-timeout: 3000
+      initialization-fail-timeout: 0
     url: jdbc:postgresql://localhost:5433/airport
     username: postgres
     password: postgres
@@ -33,7 +36,12 @@ spring:
     port: 9042
     keyspace-name: airport_logs
     local-datacenter: datacenter1
-    schema-action: CREATE_IF_NOT_EXISTS   
+    schema-action: CREATE_IF_NOT_EXISTS
+    request:
+      timeout: 10s
+    connection:
+      connection-timeout: 15s
+      init-query-timeout: 15s   
 
   # ── Redis ───────────────────────────────────────────────────
   data:
