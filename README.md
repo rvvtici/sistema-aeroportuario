@@ -219,9 +219,9 @@ Armazena dados voláteis que precisam de acesso rápido e são atualizados com f
 - Status atual de voos e bagagens
 - Portões de embarque
 - Sincronização automática: Ao inicializar, o backend espelha todos os dados do PostgreSQL no Redis; alterações feitas pelo sistema atualizam os dois bancos simultaneamente
-
-Os dados do Redis são sempre sincronizados com o PostgreSQL a cada alteração.
----
+<br>
+Os dados do Redis são sempre sincronizados com o PostgreSQL.
+<br>
 
 ## Conceitos importantes
 
@@ -235,6 +235,36 @@ Os dados do Redis são sempre sincronizados com o PostgreSQL a cada alteração.
   - Pagamento pertence à passagem
   - Embarque pertence ao ticket
 
+## CRUD no Backend - Consultas para teste
+- Postgres:
+```
+docker exec -it airport_postgres psql -U postgres -d airport
+\dt -- para listar as tabelas
+
+-- TESTE - PASSAGEIRO
+INSERT INTO passageiro (cpf, nome_completo, data_nascimento, telefone, email, endereco) VALUES
+('40152037022', 'Joe Limer',       '2000-03-07', '1197422221', 'Joe.limer@email.com',    'Rua das Flores Amarelas, 12, São Paulo - SP');
+
+-- TESTE - VOO
+INSERT INTO voo (companhia_aerea, origem, destino, aeronave, terminal, portao, horario_partida, horario_chegada, previsao_partida, previsao_chegada, status) VALUES
+('Gol', 'GRU', 'SDU', 'Airbus 2700', 'T1', 'A08', '2026-08-10 06:00:00', '2026-08-10 07:10:00', '2026-08-10 06:05:00', '2026-08-10 07:15:00', 'PROGRAMADO');
+
+-- TESTE - BAGAGEM
+INSERT INTO bagagem (ticket_id, peso, status) VALUES
+(1, 17.6, 'RETIRADA');
+```
+- Redis:
+```
+docker exec -it airport_redis redis-cli
+KEYS *
+```
+- Cassandra:
+```
+docker exec -it airport_cassandra cqlsh 
+USE airport_logs;
+DESC tables; -- Lista as tabelas (log_criacao, log_cancelamento, log_confirmacao, log_mudanca)
+SELECT * FROM log_criacao -- É possível acessar qualquer tabela para verificar
+```
 ---
 ## Autoria
 Desenvolvido por **Ana Lima** e **Ravi Macedo**.
