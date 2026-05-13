@@ -64,6 +64,7 @@ mvn spring-boot:run
 Para acessar o frontend, via outro terminal, acesse a pasta do projeto em:
 ```
 cd frontend/airport-frontend/
+npm install
 npm run dev
 ```
 A aplicação estará disponível em:
@@ -71,8 +72,16 @@ A aplicação estará disponível em:
 http://localhost:5173/
 ```
 ## Interface do Usuário
-O projeto conta com uma interface web voltada para operações aeroportuárias internas, oferecendo um sistema de login para autenticação e controle de acesso conforme os diferentes tipos de usuário. 
+O projeto conta com uma interface web voltada para operações aeroportuárias internas, oferecendo um sistema de login para autenticação e controle de acesso conforme os diferentes tipos de usuário.
+<br>
 <img width="504" height="439" alt="image" src="https://github.com/user-attachments/assets/341716e8-847f-439e-ae5a-1d716b6e7e0d" />
+<br>
+Os logins são divididos entre admin, operador e atendente, com sufixos associados ao aeroporto nacional que estará realizando a conexão ao ambiente. As senhas para todos foram padronizadas.
+Exemplo usado: 
+```
+login: atendente.gru
+senha: 123456
+```
 Após a autentificação, o usuário é direcionado para um painel operacional inspirado em telões aeroportuários, priorizando leitura rápida para monitoramento e atualização contínua de informações.
 O sistema é dividido em duas abas principais:
 - Voos: Página principal da aplicação. Exibe os voos associados ao aeroporto, incluindo informações operacionais e atualizações de status em tempo real.
@@ -132,7 +141,13 @@ sistema-aeroportuario/
 │           │   │   └── schema.cql              # Criação de keyspace/tabelas (referência)
 │           │   └── migration/                  # Scripts Flyway — rodam automaticamente no boot
 │           │       ├── V1__create_tables.sql   # DDL — criação das tabelas
-│           │       └── V2__seed_data.sql       # DML — população inicial
+│           │       ├── V2__seed_data.sql           # DML — população inicial
+│           │       ├── V3__fix_char_columns.sql    # Altera colunas para VARCHAR
+│           │       ├── V4__fix_serial_columns.sql    # Altera colunas para BIGINT
+│           │       ├── V5__fix_all_int_to_bigint.sql    # Altera colunas de bagagem, ticket_de_voo e passagem para BIGINT
+│           │       ├── V6__fix_all_char_columns.sql    # Altera colunas de passageiro, voo e passagem para VARCHAR
+│           │       ├── V7__create_usuarios    # Criação de tabela usuario para Autenticação
+│           │       ├── V8__seed_usuarios.sql  # População de tabela usuario com todos os logins admin, operador e atendente para cada aeroporto nacional
 │           └── static/                         # Build do frontend servido pelo Spring (porta 8080)
 │
 └── frontend/                       # Código fonte do frontend React
