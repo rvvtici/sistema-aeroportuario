@@ -58,11 +58,10 @@ Ao apertar ENTER,  digitar EXIT para deixar **cqlsh** e voltar à pasta do proje
 
 Finalmente, podemos rodar o backend por:
 ```bash
-cd backend
 mvn spring-boot:run
 ```
 Para acessar o frontend, via outro terminal, acesse a pasta do projeto em:
-```
+```bash
 cd frontend/airport-frontend/
 npm install
 npm run dev
@@ -79,7 +78,7 @@ O projeto conta com uma interface web voltada para operações aeroportuárias i
 Os logins são divididos entre admin, operador e atendente, com sufixos associados ao aeroporto nacional que estará realizando a conexão ao ambiente. As senhas para todos foram padronizadas.
 Exemplo usado: 
 ```
-login: atendente.gru
+login: atendente.gru OU admin.gru
 senha: 123456
 ```
 Após a autentificação, o usuário é direcionado para um painel operacional inspirado em telões aeroportuários, priorizando leitura rápida para monitoramento e atualização contínua de informações.
@@ -115,40 +114,39 @@ sistema-aeroportuario/
 ├── cassandra-init.cql              # Script CQL rodado pelo cassandra-init no docker-compose
 ├── docker-compose.yml              # Sobe PostgreSQL, Cassandra e Redis localmente
 │
-├── backend/                        # Aplicação Spring Boot
-│   ├── pom.xml                     # Dependências e configuração do Maven
-│   └── src/main/
-│       ├── java/com/airport/
-│       │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
-│       │   ├── config/                         # Configuração dos três bancos
-│       │   ├── cassandra/                      # Módulo de logs — dados massivos e contínuos
-│       │   │   ├── controller/
-│       │   │   ├── entity/
-│       │   │   ├── repository/
-│       │   │   └── service/
-│       │   ├── postgres/                       # Módulo relacional — dados transacionais críticos
-│       │   │   ├── controller/
-│       │   │   ├── entity/
-│       │   │   ├── repository/
-│       │   │   └── service/
-│       │   └── redis/                          # Módulo de status em tempo real — dados voláteis
-│       │       ├── controller/
-│       │       └── service/
-│       └── resources/
-│           ├── application.yml                 # Configuração dos três bancos (URLs, portas, credenciais)
-│           ├── db/
-│           │   ├── cassandra/
-│           │   │   └── schema.cql              # Criação de keyspace/tabelas (referência)
-│           │   └── migration/                  # Scripts Flyway — rodam automaticamente no boot
-│           │       ├── V1__create_tables.sql   # DDL — criação das tabelas
-│           │       ├── V2__seed_data.sql           # DML — população inicial
-│           │       ├── V3__fix_char_columns.sql    # Altera colunas para VARCHAR
-│           │       ├── V4__fix_serial_columns.sql    # Altera colunas para BIGINT
-│           │       ├── V5__fix_all_int_to_bigint.sql    # Altera colunas de bagagem, ticket_de_voo e passagem para BIGINT
-│           │       ├── V6__fix_all_char_columns.sql    # Altera colunas de passageiro, voo e passagem para VARCHAR
-│           │       ├── V7__create_usuarios    # Criação de tabela usuario para Autenticação
-│           │       ├── V8__seed_usuarios.sql  # População de tabela usuario com todos os logins admin, operador e atendente para cada aeroporto nacional
-│           └── static/                         # Build do frontend servido pelo Spring (porta 8080)
+│── pom.xml                     # Dependências e configuração do Maven
+│── src/main/
+│   ├── java/com/airport/
+│   │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
+│   │   ├── config/                         # Configuração dos três bancos
+│   │   ├── cassandra/                      # Módulo de logs — dados massivos e contínuos
+│   │   │   ├── controller/
+│   │   │   ├── entity/
+│   │   │   ├── repository/
+│   │   │   └── service/
+│   │   ├── postgres/                       # Módulo relacional — dados transacionais críticos
+│   │   │   ├── controller/
+│   │   │   ├── entity/
+│   │   │   ├── repository/
+│   │   │   └── service/
+│   │   └── redis/                          # Módulo de status em tempo real — dados voláteis
+│   │       ├── controller/
+│   │       └── service/
+│   └── resources/
+│       ├── application.yml                 # Configuração dos três bancos (URLs, portas, credenciais)
+│       ├── db/
+│       │   ├── cassandra/
+│       │   │   └── schema.cql              # Criação de keyspace/tabelas (referência)
+│       │   └── migration/                  # Scripts Flyway — rodam automaticamente no boot
+│       │       ├── V1__create_tables.sql   # DDL — criação das tabelas
+│       │       ├── V2__seed_data.sql           # DML — população inicial
+│       │       ├── V3__fix_char_columns.sql    # Altera colunas para VARCHAR
+│       │       ├── V4__fix_serial_columns.sql    # Altera colunas para BIGINT
+│       │       ├── V5__fix_all_int_to_bigint.sql    # Altera colunas de bagagem, ticket_de_voo e passagem para BIGINT
+│       │       ├── V6__fix_all_char_columns.sql    # Altera colunas de passageiro, voo e passagem para VARCHAR
+│       │       ├── V7__create_usuarios    # Criação de tabela usuario para Autenticação
+│       │       ├── V8__seed_usuarios.sql  # População de tabela usuario com todos os logins admin, operador e atendente para cada aeroporto nacional
+│       └── static/                         # Build do frontend servido pelo Spring (porta 8080)
 │
 └── frontend/                       # Código fonte do frontend React
     └── airport-frontend/
