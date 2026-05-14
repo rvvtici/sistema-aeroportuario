@@ -220,29 +220,81 @@ Os dados do Redis são sempre sincronizados com o PostgreSQL.
 docker exec -it airport_postgres psql -U postgres -d airport
 \dt -- para listar as tabelas
 
--- TESTE - PASSAGEIRO
-INSERT INTO passageiro (cpf, nome_completo, data_nascimento, telefone, email, endereco) VALUES
-('40152037022', 'Joe Limer',       '2000-03-07', '1197422221', 'Joe.limer@email.com',    'Rua das Flores Amarelas, 12, São Paulo - SP');
+SELECT * FROM voo;
+SELECT * FROM bagagem;
+SELECT * FROM passageiro;
+```
+- Autenticação da API:
+```
+$response = Invoke-RestMethod `
+-Uri "http://localhost:8080/auth/login" `
+-Method POST `
+-ContentType "application/json" `
+-Body '{
+  "login":"admin.gru",
+  "senha":"123456"
+}'
 
--- TESTE - VOO
-INSERT INTO voo (companhia_aerea, origem, destino, aeronave, terminal, portao, horario_partida, horario_chegada, previsao_partida, previsao_chegada, status) VALUES
-('Gol', 'GRU', 'SDU', 'Airbus 2700', 'T1', 'A08', '2026-08-10 06:00:00', '2026-08-10 07:10:00', '2026-08-10 06:05:00', '2026-08-10 07:15:00', 'PROGRAMADO');
+$token = $response.token
 
--- TESTE - BAGAGEM
-INSERT INTO bagagem (ticket_id, peso, status) VALUES
-(1, 17.6, 'RETIRADA');
+$headers = @{
+    Authorization = "Bearer $token"
+}
+```
+- TESTE - Criar voo via API:
+```
+Invoke-RestMethod `
+-Uri "http://localhost:8080/api/voos" `
+-Method POST `
+-Headers $headers `
+-ContentType "application/json" `
+-Body '{
+  "companhiaAerea":"Gol",
+  "origem":{"iata":"GRU"},
+  "destino":{"iata":"SDU"},
+  "aeronave":"Airbus 2700",
+  "terminal":"T1",
+  "portao":"A08",
+  "horarioPartida":"2026-08-10T06:00:00",
+  "horarioChegada":"2026-08-10T07:10:00",
+  "previsaoPartida":"2026-08-10T06:05:00",
+  "previsaoChegada":"2026-08-10T07:15:00",
+  "status":"PROGRAMADO"
+}'
+```
+- TESTE - Atualizar voo via API
+```
+Invoke-RestMethod `
+-Uri "http://localhost:8080/api/voos/1" `
+-Method PUT `
+-Headers $headers `
+-ContentType "application/json" `
+-Body '{
+  "companhiaAerea":"Gol",
+  "origem":{"iata":"GRU"},
+  "destino":{"iata":"SDU"},
+  "aeronave":"Airbus 2700",
+  "terminal":"T1",
+  "portao":"B22",
+  "horarioPartida":"2026-08-10T06:00:00",
+  "horarioChegada":"2026-08-10T07:10:00",
+  "previsaoPartida":"2026-08-10T06:05:00",
+  "previsaoChegada":"2026-08-10T07:15:00",
+  "status":"EMBARCANDO"
+}'
 ```
 - Redis:
 ```
 docker exec -it airport_redis redis-cli
 KEYS *
+HGETALL voo:1
 ```
 - Cassandra:
 ```
 docker exec -it airport_cassandra cqlsh 
 USE airport_logs;
 DESC tables; -- Lista as tabelas (log_criacao, log_cancelamento, log_confirmacao, log_mudanca)
-SELECT * FROM log_criacao -- É possível acessar qualquer tabela para verificar
+SELECT * FROM log_criacao; -- É possível acessar qualquer tabela para verificar
 ```
 ---
 ## Autoria

@@ -50,7 +50,8 @@ export function VooRow({ voo, onUpdate, user }) {
   }
   const origem = voo.origem?.iata || '—'
   const destino = voo.destino?.iata || '—'
-
+  const ehDoMeuAeroporto = voo.origem?.iata === user?.aeroportoIata || voo.destino?.iata === user?.aeroportoIata
+  const podeEditarVoo = (user?.role === 'ADMIN' || user?.role === 'OPERADOR') && ehDoMeuAeroporto  
   return (
     <tr
       style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.15s' }}
@@ -93,7 +94,7 @@ export function VooRow({ voo, onUpdate, user }) {
       </td>
 
       <td style={td}>
-        {user?.role !== 'ATENDENTE' ? (
+        {podeEditarVoo ? (
           editingPortao ? (
             <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
               <input
@@ -128,7 +129,7 @@ export function VooRow({ voo, onUpdate, user }) {
       </td>
 
       <td style={td}>
-        {user?.role !== 'ATENDENTE' ? (
+        {podeEditarVoo ? (
           editingStatus ? (
             <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
               <select
