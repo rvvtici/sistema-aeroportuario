@@ -1,7 +1,6 @@
 # 🪂 GLIDER - Sistema de Gestão Aeroportuária
 
 ## Visão Geral
-
 ***Glider*** é um sistema de gerenciamento aeroportuário voltado para operações internas e monitoramento em tempo real, utilizando uma arquitetura baseada em múltiplos bancos de dados. O sistema permite:
 - Gerenciamento de voos e aeroportos  
 - Controle de passagens, tickets (check-in) e bagagens  
@@ -11,9 +10,7 @@
 ---
 
 ## Objetivo do Projeto
-
 Construir uma arquitetura escalável que:
-
 - Centralize dados críticos em um banco relacional
 - Utilize bancos NoSQL para:
   - status em tempo real
@@ -31,6 +28,7 @@ Construir uma arquitetura escalável que:
 - Cassandra
 - Redis
 - Docker
+- React/Vite
 
 ## Pré-requisitos:
 - Docker Desktop (Windows) | docker-compose & docker (ArchLinux)
@@ -76,7 +74,7 @@ O projeto conta com uma interface web voltada para operações aeroportuárias i
 <img width="504" height="439" alt="image" src="https://github.com/user-attachments/assets/341716e8-847f-439e-ae5a-1d716b6e7e0d" />
 <br>
 Os logins são divididos entre admin, operador e atendente, com sufixos associados ao aeroporto nacional que estará realizando a conexão ao ambiente. As senhas para todos foram padronizadas.
-Exemplo usado: 
+Exemplo usado (usuários em src/main/db/migration/V8_seed_usuarios.sql): 
 ```
 login: atendente.gru OU admin.gru
 senha: 123456
@@ -222,7 +220,7 @@ SELECT * FROM voo;
 SELECT * FROM bagagem;
 SELECT * FROM passageiro;
 ```
-- Autenticação da API:
+- Saia do CLI do Postgres e rode para autenticação da API:
 ```
 $response = Invoke-RestMethod `
 -Uri "http://localhost:8080/auth/login" `
@@ -239,7 +237,7 @@ $headers = @{
     Authorization = "Bearer $token"
 }
 ```
-- TESTE - Criar voo via API:
+- Depois disso, para criar voo via API:
 ```
 Invoke-RestMethod `
 -Uri "http://localhost:8080/api/voos" `
@@ -260,7 +258,7 @@ Invoke-RestMethod `
   "status":"PROGRAMADO"
 }'
 ```
-- TESTE - Atualizar voo via API
+- Atualizar voo via API
 ```
 Invoke-RestMethod `
 -Uri "http://localhost:8080/api/voos/1" `
