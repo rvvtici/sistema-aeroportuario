@@ -50,15 +50,8 @@ E verificar se os containers foram gerados:
 ```bash
 docker ps 
 ```
-Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-2 minutos) e validar com:
+Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-2 minutos). Finalmente, podemos rodar o backend por:
 ```bash
-docker exec -it airport_cassandra cqlsh 
-```
-Ao apertar ENTER,  digitar EXIT para deixar **cqlsh** e voltar à pasta do projeto.
-
-Finalmente, podemos rodar o backend por:
-```bash
-cd backend
 mvn spring-boot:run
 ```
 Para acessar o frontend, via outro terminal, acesse a pasta do projeto em:

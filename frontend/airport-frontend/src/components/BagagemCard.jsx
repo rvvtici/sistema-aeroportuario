@@ -60,9 +60,9 @@ export function BagagemCard({ ticket, user, onDelete }) {
 
   const passageiro = ticket.passagem?.passageiro
   const voo = ticket.passagem?.voo
-  const ehDoMeuAeroporto = voo.origem?.iata === user?.aeroportoIata || voo.destino?.iata === user?.aeroportoIata
-  const podeEditarVoo = (user?.role === 'ADMIN' || user?.role === 'OPERADOR') && ehDoMeuAeroporto
-
+  const ehDoMeuAeroporto = voo?.origem?.iata === user?.aeroportoIata || voo?.destino?.iata === user?.aeroportoIata
+  const podeEditar = (user?.role === 'ADMIN' || user?.role === 'OPERADOR') && ehDoMeuAeroporto
+  const podeDeletar = user?.role === 'ADMIN' && ehDoMeuAeroporto
   return (
     <div style={{
       background: 'var(--bg-card)',
@@ -91,7 +91,7 @@ export function BagagemCard({ ticket, user, onDelete }) {
                 · {bagagem.peso}kg
               </span>
             )}
-            {podeEditarVoo && (
+            {podeDeletar && (
               <button
                 onClick={deletarBagagem}
                 title="Deletar bagagem"
@@ -147,7 +147,7 @@ export function BagagemCard({ ticket, user, onDelete }) {
             <button onClick={() => setEditing(false)} style={btnCancel}>✕</button>
           </div>
         ) : (
-          podeEditarVoo ? (
+          podeEditar ? (
             <div
               style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}
               onClick={() => { setTempStatus(statusAtual); setEditing(true) }}
