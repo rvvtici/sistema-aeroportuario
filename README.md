@@ -48,7 +48,7 @@ E verificar se os containers foram gerados:
 ```bash
 docker ps 
 ```
-Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-2 minutos). Finalmente, podemos rodar o backend por:
+Após confirmação, aguardar a inicialização completa do Cassandra (aproximadamente 1-2 minutos) antes de rodar o backend por:
 ```bash
 mvn spring-boot:run
 ```
@@ -103,32 +103,87 @@ O backend é uma aplicação Java com Spring Boot organizada em um único projet
 ```bash
 sistema-aeroportuario/
 ├── README.md
-├── cassandra-init.cql              # Script CQL rodado pelo cassandra-init no docker-compose
+├── cassandra-init.cql              # Script CQL executado pelo cassandra-init no docker-compose para criar o keyspace
 ├── docker-compose.yml              # Sobe PostgreSQL, Cassandra e Redis localmente
 │
 │── pom.xml                     # Dependências e configuração do Maven
 │── src/main/
 │   ├── java/com/airport/
 │   │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
-│   │   ├── config/                         # Configuração dos três bancos
+│   │   ├── config/                         # Configurações globais da aplicação
+│   │   │   ├── CassandraConfig.java        # Conexão e configuração do Cassandra
+│   │   │   ├── JwtFilter.java              # Filtro que valida o token JWT em cada requisição
+│   │   │   ├── JwtUtil.java                # Geração e validação de tokens JWT
+│   │   │   ├── PostgresConfig.java         # Conexão e configuração do PostgreSQL
+│   │   │   ├── RedisConfig.java            # Conexão e configuração do Redis
+│   │   │   ├── SecurityConfig.java         # Regras de autenticação e autorização (Spring Security)
+│   │   │   └── WebConfig.java              # Configuração de CORS
+│   │   ├── dto/                            # Objetos de transferência de dados (entrada/saída da API)
+│   │   │   ├── LoginRequest.java           # Corpo da requisição de login (login + senha)
+│   │   │   └── LoginResponse.java          # Resposta do login (token JWT + dados do usuário)
 │   │   ├── cassandra/                      # Módulo de logs — dados massivos e contínuos
 │   │   │   ├── controller/
+│   │   │   │   └── LogController.java      # Endpoints para consulta de logs
 │   │   │   ├── entity/
+│   │   │   │   ├── LogCriacao.java         # Entidade para logs de criação de recursos (voo, bagagem)
+│   │   │   │   ├── LogCancelamento.java    # Entidade para logs de cancelamento e exclusão
+│   │   │   │   ├── LogConfirmacao.java     # Entidade para logs de conclusão (voo concluído, bagagem retirada)
+│   │   │   │   └── LogMudanca.java         # Entidade para logs de mudança de status
 │   │   │   ├── repository/
+│   │   │   │   ├── LogCriacaoRepository.java
+│   │   │   │   ├── LogCancelamentoRepository.java
+│   │   │   │   ├── LogConfirmacaoRepository.java
+│   │   │   │   └── LogMudancaRepository.java
 │   │   │   └── service/
+│   │   │       └── LogService.java
 │   │   ├── postgres/                       # Módulo relacional — dados transacionais críticos
 │   │   │   ├── controller/
+│   │   │   │   ├── AeroportoController.java
+│   │   │   │   ├── AuthController.java
+│   │   │   │   ├── BagagemController.java
+│   │   │   │   ├── PassageiroController.java
+│   │   │   │   ├── PassagemController.java
+│   │   │   │   ├── TicketController.java
+│   │   │   │   └── VooController.java
+│   │   │   │
 │   │   │   ├── entity/
+│   │   │   │   ├── Aeroporto.java
+│   │   │   │   ├── Bagagem.java
+│   │   │   │   ├── Passageiro.java
+│   │   │   │   ├── Passagem.java
+│   │   │   │   ├── TicketDeVoo.java
+│   │   │   │   ├── Usuario.java
+│   │   │   │   └── Voo.java
+│   │   │   │
 │   │   │   ├── repository/
+│   │   │   │   ├── AeroportoRepository.java
+│   │   │   │   ├── BagagemRepository.java
+│   │   │   │   ├── PassageiroRepository.java
+│   │   │   │   ├── PassagemRepository.java
+│   │   │   │   ├── TicketRepository.java
+│   │   │   │   ├── UsuarioRepository.java
+│   │   │   │   └── VooRepository.java
 │   │   │   └── service/
+│   │   │       ├── AuthService.java
+│   │   │       ├── BagagemService.java
+│   │   │       ├── PassageiroService.java
+│   │   │       ├── PassagemService.java
+│   │   │       ├── TicketService.java
+│   │   │       └── VooService.java
 │   │   └── redis/                          # Módulo de status em tempo real — dados voláteis
 │   │       ├── controller/
+│   │       │   ├── RedisController.java
+│   │       │   ├── StatusBagagemController.java
+│   │       │   └── StatusVooController.java
 │   │       └── service/
+│   │           ├── RedisService.java
+│   │           ├── StatusBagagemService.java
+│   │           └── StatusVooService.java
 │   └── resources/
 │       ├── application.yml                 # Configuração dos três bancos (URLs, portas, credenciais)
 │       ├── db/
 │       │   ├── cassandra/
-│       │   │   └── schema.cql              # Criação de keyspace/tabelas (referência)
+│       │   │   └── schema.cql              # Criação de keyspace/tabelas
 │       │   └── migration/                  # Scripts Flyway — rodam automaticamente no boot
 │       │       ├── V1__create_tables.sql   # DDL — criação das tabelas
 │       │       ├── V2__seed_data.sql           # DML — população inicial
@@ -148,11 +203,20 @@ sistema-aeroportuario/
             ├── App.jsx             # Painel principal (voos + bagagens)
             ├── api.js              # Camada de chamadas HTTP para a API
             ├── index.css           # Variáveis CSS e reset global
-            ├── components/         # StatusBadge, TimeDisplay, VooRow, BagagemCard
-            └── hooks/
-                └── usePolling.js   # Atualização automática a cada N segundos
+            ├── main.jsx         
+            ├── components/
+            │   ├── BagagemCard.jsx
+            │   ├── ProtectedRoute.jsx
+            │   ├── StatusBadge.jsx
+            │   ├── TimeDisplay.jsx
+            │   └── VooRow.jsx
+            ├── context/
+            │   └── AuthContext.jsx      
+            ├── hooks/
+            │   └── usePolling.js   # Atualização automática a cada N segundos
+            └── pages/
+                └── LoginPage.jsx   # Atualização automática a cada N segundos
 ```
-
 ## Arquitetura de Dados
 
 O sistema utiliza três bancos, cada um com papéis bem definidos:
