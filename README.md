@@ -110,7 +110,7 @@ sistema-aeroportuario/
 │── src/main/
 │   ├── java/com/airport/
 │   │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
-│   │   ├── config/                         # Configurações globais da aplicação
+│   │   ├── config/                         
 │   │   │   ├── CassandraConfig.java        # Conexão e configuração do Cassandra
 │   │   │   ├── JwtFilter.java              # Filtro que valida o token JWT em cada requisição
 │   │   │   ├── JwtUtil.java                # Geração e validação de tokens JWT
@@ -135,11 +135,11 @@ sistema-aeroportuario/
 │   │   │   │   ├── LogConfirmacaoRepository.java
 │   │   │   │   └── LogMudancaRepository.java
 │   │   │   └── service/
-│   │   │       └── LogService.java
+│   │   │       └── LogService.java         # Métodos para registrar cada tipo de log no Cassandra
 │   │   ├── postgres/                       # Módulo relacional — dados transacionais críticos
 │   │   │   ├── controller/
 │   │   │   │   ├── AeroportoController.java
-│   │   │   │   ├── AuthController.java
+│   │   │   │   ├── AuthController.java     # Endpoint de login e geração de token JWT
 │   │   │   │   ├── BagagemController.java
 │   │   │   │   ├── PassageiroController.java
 │   │   │   │   ├── PassagemController.java
@@ -164,7 +164,7 @@ sistema-aeroportuario/
 │   │   │   │   ├── UsuarioRepository.java
 │   │   │   │   └── VooRepository.java
 │   │   │   └── service/
-│   │   │       ├── AuthService.java
+│   │   │       ├── AuthService.java         # Valida credenciais e gera token JWT
 │   │   │       ├── BagagemService.java
 │   │   │       ├── PassageiroService.java
 │   │   │       ├── PassagemService.java
@@ -172,50 +172,51 @@ sistema-aeroportuario/
 │   │   │       └── VooService.java
 │   │   └── redis/                          # Módulo de status em tempo real — dados voláteis
 │   │       ├── controller/
-│   │       │   ├── RedisController.java
-│   │       │   ├── StatusBagagemController.java
+│   │       │   ├── RedisController.java    # Endpoints utilitários do Redis
+│   │       │   ├── StatusBagagemController.java     
 │   │       │   └── StatusVooController.java
 │   │       └── service/
-│   │           ├── RedisService.java
-│   │           ├── StatusBagagemService.java
-│   │           └── StatusVooService.java
+│   │           ├── RedisService.java       # Operações genéricas no Redis
+│   │           ├── StatusBagagemService.java       # Sincroniza status de bagagens entre Redis e PostgreSQL
+│   │           └── StatusVooService.java           # Sincroniza status de voos entre Redis e PostgreSQL
 │   └── resources/
 │       ├── application.yml                 # Configuração dos três bancos (URLs, portas, credenciais)
 │       ├── db/
 │       │   ├── cassandra/
 │       │   │   └── schema.cql              # Criação de keyspace/tabelas
-│       │   └── migration/                  # Scripts Flyway — rodam automaticamente no boot
+│       │   └── migration/                  # Scripts Flyway — rodam em ordem automaticamente no boot
 │       │       ├── V1__create_tables.sql   # DDL — criação das tabelas
 │       │       ├── V2__seed_data.sql           # DML — população inicial
 │       │       ├── V3__fix_char_columns.sql    # Altera colunas para VARCHAR
 │       │       ├── V4__fix_serial_columns.sql    # Altera colunas para BIGINT
 │       │       ├── V5__fix_all_int_to_bigint.sql    # Altera colunas de bagagem, ticket_de_voo e passagem para BIGINT
 │       │       ├── V6__fix_all_char_columns.sql    # Altera colunas de passageiro, voo e passagem para VARCHAR
-│       │       ├── V7__create_usuarios    # Criação de tabela usuario para Autenticação
-│       │       ├── V8__seed_usuarios.sql  # População de tabela usuario com todos os logins admin, operador e atendente para cada aeroporto nacional
+│       │       ├── V7__create_usuarios    # Criação de tabela usuario para autenticação
+│       │       ├── V8__seed_usuarios.sql  # População com logins de ADMIN, OPERADOR e ATENDENTE para cada aeroporto nacional
 │       └── static/                         # Build do frontend servido pelo Spring (porta 8080)
 │
-└── frontend/                       # Código fonte do frontend React
+└── frontend/                       
     └── airport-frontend/
-        ├── vite.config.js          # Proxy /api → localhost:8080
+        ├── vite.config.js          # Proxy /api 
         ├── package.json
         └── src/
-            ├── App.jsx             # Painel principal (voos + bagagens)
-            ├── api.js              # Camada de chamadas HTTP para a API
-            ├── index.css           # Variáveis CSS e reset global
-            ├── main.jsx         
+            ├── App.jsx             # Componente raiz — painel principal com abas de voos e bagagens
+            ├── api.js              # Camada de chamadas HTTP que injeta token JWT em todas as requisições
+            ├── index.css           # Variáveis CSS globais e reset
+            ├── main.jsx            # Ponto de entrada React — envolve a aplicação com AuthProvider
             ├── components/
-            │   ├── BagagemCard.jsx
-            │   ├── ProtectedRoute.jsx
-            │   ├── StatusBadge.jsx
-            │   ├── TimeDisplay.jsx
-            │   └── VooRow.jsx
+            │   ├── BagagemCard.jsx     # Estrutura de bagagens
+            │   ├── ProtectedRoute.jsx  # Redireciona para login se não houver sessão ativa
+            │   ├── StatusBadge.jsx     # Tags visuais
+            │   ├── TimeDisplay.jsx     # Na tabela de voos, exibe horário original e previsão com indicação de atraso
+            │   └── VooRow.jsx          # Linha da tabela de voos
             ├── context/
-            │   └── AuthContext.jsx      
+            │   └── AuthContext.jsx     # Contexto global de autenticação (usuário logado, token, logout)
+   
             ├── hooks/
             │   └── usePolling.js   # Atualização automática a cada N segundos
             └── pages/
-                └── LoginPage.jsx   # Atualização automática a cada N segundos
+                └── LoginPage.jsx   # Tela de login
 ```
 ## Arquitetura de Dados
 
