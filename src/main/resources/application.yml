@@ -1,55 +1,19 @@
 spring:
   application:
     name: airport-management
-  datasource:
-    hikari:
-      minimum-idle: 2
-      maximum-pool-size: 10
-      connection-timeout: 3000
-      initialization-fail-timeout: 0
-    url: jdbc:postgresql://localhost:5433/airport
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-
   jpa:
     hibernate:
-      ddl-auto: none        
-    show-sql: true              
+      ddl-auto: none
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  # ── Flyway (migrations do PostgreSQL) ───────────────────────
   flyway:
     enabled: true
-    url: jdbc:postgresql://localhost:5433/airport
-    user: postgres
-    password: postgres
     locations: classpath:db/migration
     baseline-on-migrate: true
     repair-on-migrate: true
 
-  # ── Cassandra ───────────────────────────────────────────────
-  cassandra:
-    contact-points: localhost
-    port: 9042
-    keyspace-name: airport_logs
-    local-datacenter: datacenter1
-    schema-action: CREATE_IF_NOT_EXISTS
-    request:
-      timeout: 10s
-    connection:
-      connection-timeout: 15s
-      init-query-timeout: 15s   
-
-  # ── Redis ───────────────────────────────────────────────────
-  data:
-    redis:
-      host: localhost
-      port: 6379
-
-# ── Porta da API ────────────────────────────────────────────
 server:
   port: 8080

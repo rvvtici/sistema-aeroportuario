@@ -1,0 +1,57 @@
+databases:
+  - name: glider-postgres
+    plan: free
+    databaseName: airport
+    user: airport_user
+
+services:
+  # Cassandra - roda a imagem oficial pública, sem disco persistente
+  - type: pserv
+    name: glider-cassandra
+    runtime: image
+    image:
+      url: docker.io/library/cassandra:latest
+    plan: free
+    envVars:
+      - key: CASSANDRA_CLUSTER_NAME
+        value: glider-cluster
+
+  # Redis / Key Value gerenciado
+  - type: keyvalue
+    name: glider-redis
+    plan: free
+    ipAllowList: []
+
+  # Backend Spring Boot
+  - type: web
+    name: glider-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: DATABASE_URL
+        fromDatabase:
+          name: glider-postgres
+          property: connectionString
+      - key: DB_USER
+        fromDatabase:
+          name: glider-postgres
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: glider-postgres
+          property: password
+      - key: CASSANDRA_HOST
+        fromService:
+          type: pserv
+          name: glider-cassandra
+          property: host
+      - key: CASSANDRA_PORT
+        value: "9042"
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: glider-redis
+          property: connectionString

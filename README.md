@@ -1,6 +1,7 @@
 # 🪂 GLIDER - Sistema de Gestão Aeroportuária
 
 ## Visão Geral
+
 ***Glider*** é um sistema de gerenciamento aeroportuário voltado para operações internas e monitoramento em tempo real, utilizando uma arquitetura baseada em múltiplos bancos de dados. O sistema permite:
 - Gerenciamento de voos e aeroportos  
 - Controle de passagens, tickets (check-in) e bagagens  
@@ -10,7 +11,9 @@
 ---
 
 ## Objetivo do Projeto
+
 Construir uma arquitetura escalável que:
+
 - Centralize dados críticos em um banco relacional
 - Utilize bancos NoSQL para:
   - status em tempo real
@@ -28,7 +31,6 @@ Construir uma arquitetura escalável que:
 - Cassandra
 - Redis
 - Docker
-- React/Vite
 
 ## Pré-requisitos:
 - Docker Desktop (Windows) | docker-compose & docker (ArchLinux)
@@ -48,12 +50,19 @@ E verificar se os containers foram gerados:
 ```bash
 docker ps 
 ```
-Após confirmação, aguardar a inicialização completa do Cassandra (aproximadamente 1-2 minutos) antes de rodar o backend por:
+Após confirmação, aguardar a inicialização do Cassandra (aproximadamente 1-2 minutos) e validar com:
 ```bash
+docker exec -it airport_cassandra cqlsh 
+```
+Ao apertar ENTER,  digitar EXIT para deixar **cqlsh** e voltar à pasta do projeto.
+
+Finalmente, podemos rodar o backend por:
+```bash
+cd backend
 mvn spring-boot:run
 ```
 Para acessar o frontend, via outro terminal, acesse a pasta do projeto em:
-```bash
+```
 cd frontend/airport-frontend/
 npm install
 npm run dev
@@ -68,9 +77,9 @@ O projeto conta com uma interface web voltada para operações aeroportuárias i
 <img width="504" height="439" alt="image" src="https://github.com/user-attachments/assets/341716e8-847f-439e-ae5a-1d716b6e7e0d" />
 <br>
 Os logins são divididos entre admin, operador e atendente, com sufixos associados ao aeroporto nacional que estará realizando a conexão ao ambiente. As senhas para todos foram padronizadas.
-Exemplo usado (usuários em src/main/db/migration/V8_seed_usuarios.sql): 
+Exemplo usado: 
 ```
-login: atendente.gru OU admin.gru
+login: atendente.gru
 senha: 123456
 ```
 Após a autentificação, o usuário é direcionado para um painel operacional inspirado em telões aeroportuários, priorizando leitura rápida para monitoramento e atualização contínua de informações.
@@ -103,121 +112,57 @@ O backend é uma aplicação Java com Spring Boot organizada em um único projet
 ```bash
 sistema-aeroportuario/
 ├── README.md
-├── cassandra-init.cql              # Script CQL executado pelo cassandra-init no docker-compose para criar o keyspace
+├── cassandra-init.cql              # Script CQL rodado pelo cassandra-init no docker-compose
 ├── docker-compose.yml              # Sobe PostgreSQL, Cassandra e Redis localmente
 │
-│── pom.xml                     # Dependências e configuração do Maven
-│── src/main/
-│   ├── java/com/airport/
-│   │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
-│   │   ├── config/                         
-│   │   │   ├── CassandraConfig.java        # Conexão e configuração do Cassandra
-│   │   │   ├── JwtFilter.java              # Filtro que valida o token JWT em cada requisição
-│   │   │   ├── JwtUtil.java                # Geração e validação de tokens JWT
-│   │   │   ├── PostgresConfig.java         # Conexão e configuração do PostgreSQL
-│   │   │   ├── RedisConfig.java            # Conexão e configuração do Redis
-│   │   │   ├── SecurityConfig.java         # Regras de autenticação e autorização (Spring Security)
-│   │   │   └── WebConfig.java              # Configuração de CORS
-│   │   ├── dto/                            # Objetos de transferência de dados (entrada/saída da API)
-│   │   │   ├── LoginRequest.java           # Corpo da requisição de login (login + senha)
-│   │   │   └── LoginResponse.java          # Resposta do login (token JWT + dados do usuário)
-│   │   ├── cassandra/                      # Módulo de logs — dados massivos e contínuos
-│   │   │   ├── controller/
-│   │   │   │   └── LogController.java      # Endpoints para consulta de logs
-│   │   │   ├── entity/
-│   │   │   │   ├── LogCriacao.java         # Entidade para logs de criação de recursos (voo, bagagem)
-│   │   │   │   ├── LogCancelamento.java    # Entidade para logs de cancelamento e exclusão
-│   │   │   │   ├── LogConfirmacao.java     # Entidade para logs de conclusão (voo concluído, bagagem retirada)
-│   │   │   │   └── LogMudanca.java         # Entidade para logs de mudança de status
-│   │   │   ├── repository/
-│   │   │   │   ├── LogCriacaoRepository.java
-│   │   │   │   ├── LogCancelamentoRepository.java
-│   │   │   │   ├── LogConfirmacaoRepository.java
-│   │   │   │   └── LogMudancaRepository.java
-│   │   │   └── service/
-│   │   │       └── LogService.java         # Métodos para registrar cada tipo de log no Cassandra
-│   │   ├── postgres/                       # Módulo relacional — dados transacionais críticos
-│   │   │   ├── controller/
-│   │   │   │   ├── AeroportoController.java
-│   │   │   │   ├── AuthController.java     # Endpoint de login e geração de token JWT
-│   │   │   │   ├── BagagemController.java
-│   │   │   │   ├── PassageiroController.java
-│   │   │   │   ├── PassagemController.java
-│   │   │   │   ├── TicketController.java
-│   │   │   │   └── VooController.java
-│   │   │   │
-│   │   │   ├── entity/
-│   │   │   │   ├── Aeroporto.java
-│   │   │   │   ├── Bagagem.java
-│   │   │   │   ├── Passageiro.java
-│   │   │   │   ├── Passagem.java
-│   │   │   │   ├── TicketDeVoo.java
-│   │   │   │   ├── Usuario.java
-│   │   │   │   └── Voo.java
-│   │   │   │
-│   │   │   ├── repository/
-│   │   │   │   ├── AeroportoRepository.java
-│   │   │   │   ├── BagagemRepository.java
-│   │   │   │   ├── PassageiroRepository.java
-│   │   │   │   ├── PassagemRepository.java
-│   │   │   │   ├── TicketRepository.java
-│   │   │   │   ├── UsuarioRepository.java
-│   │   │   │   └── VooRepository.java
-│   │   │   └── service/
-│   │   │       ├── AuthService.java         # Valida credenciais e gera token JWT
-│   │   │       ├── BagagemService.java
-│   │   │       ├── PassageiroService.java
-│   │   │       ├── PassagemService.java
-│   │   │       ├── TicketService.java
-│   │   │       └── VooService.java
-│   │   └── redis/                          # Módulo de status em tempo real — dados voláteis
-│   │       ├── controller/
-│   │       │   ├── RedisController.java    # Endpoints utilitários do Redis
-│   │       │   ├── StatusBagagemController.java     
-│   │       │   └── StatusVooController.java
-│   │       └── service/
-│   │           ├── RedisService.java       # Operações genéricas no Redis
-│   │           ├── StatusBagagemService.java       # Sincroniza status de bagagens entre Redis e PostgreSQL
-│   │           └── StatusVooService.java           # Sincroniza status de voos entre Redis e PostgreSQL
-│   └── resources/
-│       ├── application.yml                 # Configuração dos três bancos (URLs, portas, credenciais)
-│       ├── db/
-│       │   ├── cassandra/
-│       │   │   └── schema.cql              # Criação de keyspace/tabelas
-│       │   └── migration/                  # Scripts Flyway — rodam em ordem automaticamente no boot
-│       │       ├── V1__create_tables.sql   # DDL — criação das tabelas
-│       │       ├── V2__seed_data.sql           # DML — população inicial
-│       │       ├── V3__fix_char_columns.sql    # Altera colunas para VARCHAR
-│       │       ├── V4__fix_serial_columns.sql    # Altera colunas para BIGINT
-│       │       ├── V5__fix_all_int_to_bigint.sql    # Altera colunas de bagagem, ticket_de_voo e passagem para BIGINT
-│       │       ├── V6__fix_all_char_columns.sql    # Altera colunas de passageiro, voo e passagem para VARCHAR
-│       │       ├── V7__create_usuarios    # Criação de tabela usuario para autenticação
-│       │       ├── V8__seed_usuarios.sql  # População com logins de ADMIN, OPERADOR e ATENDENTE para cada aeroporto nacional
-│       └── static/                         # Build do frontend servido pelo Spring (porta 8080)
+├── backend/                        # Aplicação Spring Boot
+│   ├── pom.xml                     # Dependências e configuração do Maven
+│   └── src/main/
+│       ├── java/com/airport/
+│       │   ├── AirportApplication.java         # Entrada da aplicação (@SpringBootApplication)
+│       │   ├── config/                         # Configuração dos três bancos
+│       │   ├── cassandra/                      # Módulo de logs — dados massivos e contínuos
+│       │   │   ├── controller/
+│       │   │   ├── entity/
+│       │   │   ├── repository/
+│       │   │   └── service/
+│       │   ├── postgres/                       # Módulo relacional — dados transacionais críticos
+│       │   │   ├── controller/
+│       │   │   ├── entity/
+│       │   │   ├── repository/
+│       │   │   └── service/
+│       │   └── redis/                          # Módulo de status em tempo real — dados voláteis
+│       │       ├── controller/
+│       │       └── service/
+│       └── resources/
+│           ├── application.yml                 # Configuração dos três bancos (URLs, portas, credenciais)
+│           ├── db/
+│           │   ├── cassandra/
+│           │   │   └── schema.cql              # Criação de keyspace/tabelas (referência)
+│           │   └── migration/                  # Scripts Flyway — rodam automaticamente no boot
+│           │       ├── V1__create_tables.sql   # DDL — criação das tabelas
+│           │       ├── V2__seed_data.sql           # DML — população inicial
+│           │       ├── V3__fix_char_columns.sql    # Altera colunas para VARCHAR
+│           │       ├── V4__fix_serial_columns.sql    # Altera colunas para BIGINT
+│           │       ├── V5__fix_all_int_to_bigint.sql    # Altera colunas de bagagem, ticket_de_voo e passagem para BIGINT
+│           │       ├── V6__fix_all_char_columns.sql    # Altera colunas de passageiro, voo e passagem para VARCHAR
+│           │       ├── V7__create_usuarios    # Criação de tabela usuario para Autenticação
+│           │       ├── V8__seed_usuarios.sql  # População de tabela usuario com todos os logins admin, operador e atendente para cada aeroporto nacional
+│           └── static/                         # Build do frontend servido pelo Spring (porta 8080)
 │
-└── frontend/                       
+└── frontend/                       # Código fonte do frontend React
     └── airport-frontend/
-        ├── vite.config.js          # Proxy /api 
+        ├── vite.config.js          # Proxy /api → localhost:8080
         ├── package.json
         └── src/
-            ├── App.jsx             # Componente raiz — painel principal com abas de voos e bagagens
-            ├── api.js              # Camada de chamadas HTTP que injeta token JWT em todas as requisições
-            ├── index.css           # Variáveis CSS globais e reset
-            ├── main.jsx            # Ponto de entrada React — envolve a aplicação com AuthProvider
-            ├── components/
-            │   ├── BagagemCard.jsx     # Estrutura de bagagens
-            │   ├── ProtectedRoute.jsx  # Redireciona para login se não houver sessão ativa
-            │   ├── StatusBadge.jsx     # Tags visuais
-            │   ├── TimeDisplay.jsx     # Na tabela de voos, exibe horário original e previsão com indicação de atraso
-            │   └── VooRow.jsx          # Linha da tabela de voos
-            ├── context/
-            │   └── AuthContext.jsx     # Contexto global de autenticação (usuário logado, token, logout)
-   
-            ├── hooks/
-            │   └── usePolling.js   # Atualização automática a cada N segundos
-            └── pages/
-                └── LoginPage.jsx   # Tela de login
+            ├── App.jsx             # Painel principal (voos + bagagens)
+            ├── api.js              # Camada de chamadas HTTP para a API
+            ├── index.css           # Variáveis CSS e reset global
+            ├── components/         # StatusBadge, TimeDisplay, VooRow, BagagemCard
+            └── hooks/
+                └── usePolling.js   # Atualização automática a cada N segundos
 ```
+
 ## Arquitetura de Dados
 
 O sistema utiliza três bancos, cada um com papéis bem definidos:
@@ -279,7 +224,7 @@ SELECT * FROM voo;
 SELECT * FROM bagagem;
 SELECT * FROM passageiro;
 ```
-- Saia do CLI do Postgres e rode para autenticação da API:
+- Autenticação da API:
 ```
 $response = Invoke-RestMethod `
 -Uri "http://localhost:8080/auth/login" `
@@ -296,7 +241,7 @@ $headers = @{
     Authorization = "Bearer $token"
 }
 ```
-- Depois disso, para criar voo via API:
+- TESTE - Criar voo via API:
 ```
 Invoke-RestMethod `
 -Uri "http://localhost:8080/api/voos" `
@@ -317,7 +262,7 @@ Invoke-RestMethod `
   "status":"PROGRAMADO"
 }'
 ```
-- Atualizar voo via API
+- TESTE - Atualizar voo via API
 ```
 Invoke-RestMethod `
 -Uri "http://localhost:8080/api/voos/1" `
